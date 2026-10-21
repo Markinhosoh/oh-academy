@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#faf6ef"/>
+  <g transform="translate(48 116) scale(5)">
+    <g font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="32">
+      <text x="1" y="45" fill="#e8792b">O</text><text x="25" y="45" fill="#2f6b4f">H</text><text x="49" y="45" fill="#b5573a">!</text>
+    </g>
+    <path d="M7 12.5v5c0 2 4 3.6 7.5 3.6S22 19.5 22 17.5v-5" fill="#2f6b4f"/>
+    <path d="M1 10.5 14.5 4 28 10.5 14.5 17z" fill="#2b241d"/>
+    <path d="M14.5 10.5 25 13v7" fill="none" stroke="#e8792b" stroke-width="1.6" stroke-linecap="round"/>
+    <circle cx="25" cy="21.2" r="1.9" fill="#e8792b"/>
+    <g transform="rotate(-28 66 34)">
+      <rect x="55" y="30" width="24" height="7.5" rx="3.7" fill="#d9b99b"/>
+      <rect x="64" y="29.5" width="3.2" height="8.5" fill="#b5573a"/>
+    </g>
+  </g>
+</svg>
