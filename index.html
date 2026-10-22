@@ -197,7 +197,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .bigxp{font-family:var(--display);font-size:40px;font-weight:800;color:var(--orange);font-variant-numeric:tabular-nums}
 #confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
 
-.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,140%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:999px;font-weight:600;font-size:14px;z-index:60;transition:transform .35s cubic-bezier(.2,.8,.2,1);max-width:calc(100% - 32px);text-align:center}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,calc(100% + 60px));background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:999px;font-weight:600;font-size:14px;z-index:60;transition:transform .35s cubic-bezier(.2,.8,.2,1);max-width:calc(100% - 32px);text-align:center}
 .toast.show{transform:translate(-50%,0)}
 
 /* admin */
@@ -271,8 +271,58 @@ th{color:var(--muted);font-weight:600;font-size:12px}
 .link .tx small{color:var(--muted);font-size:13px}
 .link .cat{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--terra)}
 
+/* login */
+body.auth .top,body.auth .dock,body.auth main{display:none!important}
+.login{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:24px 16px;overflow:auto;background:
+  radial-gradient(60% 45% at 12% 8%,var(--green-soft),transparent 70%),
+  radial-gradient(55% 40% at 95% 30%,var(--orange-soft),transparent 70%),
+  radial-gradient(70% 45% at 40% 105%,var(--terra-soft),transparent 70%),var(--bg)}
+.login[hidden]{display:none}
+.login .card{width:100%;max-width:380px;background:var(--surface);border-radius:26px;box-shadow:var(--shadow);padding:30px 24px 26px;display:grid;gap:18px;animation:loginIn .6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes loginIn{from{opacity:0;transform:translateY(18px) scale(.98)}}
+.login .logo{justify-content:center;transform:scale(1.35);transform-origin:center;margin:10px 0 14px}
+.login h1{font-family:var(--display);font-size:24px;line-height:1.15;margin:0;text-align:center}
+.login p{margin:0;color:var(--muted);text-align:center;font-size:15px}
+.login form{display:grid;gap:12px}
+.login label{display:grid;gap:6px;font-weight:600;font-size:14px}
+.login input{font:inherit;font-size:16px;padding:13px 14px;border-radius:14px;border:2px solid var(--line);background:var(--bg);color:var(--ink);transition:border-color .2s,box-shadow .2s}
+.login input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 4px var(--green-soft)}
+.login .suffix{position:relative}
+.login .suffix input{width:100%;padding-right:122px}
+.login .suffix span{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none}
+.login .err{color:var(--bad);font-weight:600;font-size:14px;text-align:center;min-height:1.2em}
+.login .err:not(:empty){animation:shake .4s}
+.login small{color:var(--muted);text-align:center;font-size:13px}
+.whoami{display:flex;justify-content:center;gap:6px;align-items:center;flex-wrap:wrap}
+.whoami button{border:0;background:none;color:var(--green);font:inherit;font-weight:600;text-decoration:underline;padding:0;cursor:pointer}
+.pl-ctrl{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.pl-ctrl button{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:99px;padding:4px 12px;font:inherit;font-weight:700;font-size:13px;cursor:pointer}
+.pl-ctrl button[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff}
+.pl-ctrl .sp{flex:1}
+
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
+
+<section class="login" id="login" hidden aria-labelledby="loginTitle">
+  <div class="card">
+    <div id="loginLogo"></div>
+    <div>
+      <h1 id="loginTitle">Bem-vindo à Escola de Vendas OH!</h1>
+      <p>Entre com o usuário e a senha que o seu gestor te passou.</p>
+    </div>
+    <form id="loginForm" novalidate>
+      <label>Usuário
+        <span class="suffix"><input id="lgUser" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="ex.: ana.centro" required><span>@ohacademy.app</span></span>
+      </label>
+      <label>Senha
+        <input id="lgPass" name="password" type="password" autocomplete="current-password" required>
+      </label>
+      <div class="err" id="lgErr" role="alert"></div>
+      <button class="cta" id="lgBtn" type="submit">Entrar</button>
+    </form>
+    <small>Esqueceu a senha? Fale com o admin da sua loja.</small>
+  </div>
+</section>
 
 <div class="top"><div class="wrap" style="padding-bottom:0">
   <div class="bar">
@@ -305,14 +355,14 @@ th{color:var(--muted);font-weight:600;font-size:12px}
   <button data-v="seller" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20c0-5 4-5 7-8s7-3 7-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="5" cy="20" r="2.2" fill="currentColor"/><circle cx="19" cy="4" r="2.2" fill="currentColor"/></svg>Trilha</button>
   <button data-v="library" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h5v15H4zM10 5h5v15h-5zM16.5 6l4 1-3 13.5-4-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Biblioteca<i class="dot" id="dotLib" hidden></i></button>
   <button data-v="extras" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Extras<i class="dot" id="dotExt" hidden></i></button>
-  <button data-v="admin" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Admin</button>
+  <button data-v="admin" aria-pressed="false" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Admin</button>
 </nav>
 
 <main class="wrap" id="seller">
   <section class="hello">
     <div>
       <div class="eyebrow">Escola de Vendas OH! Ótica</div>
-      <h1>Oi, Ana! Bora pro próximo passo?</h1>
+      <h1 id="helloTitle">Oi! Bora pro próximo passo?</h1>
     </div>
     <div class="lvl-line"><span>Nível <strong id="lvlName">Aprendiz</strong></span><span><strong id="xpNow">0</strong> / 1650 XP</span></div>
     <div class="ladder" id="ladder"></div>
@@ -322,7 +372,7 @@ th{color:var(--muted);font-weight:600;font-size:12px}
   <div id="trail"></div>
 
   <div class="cert" id="cert"><b>Certificado Escola de Vendas OH!</b>Libera quando você concluir os 8 módulos.</div>
-  <p class="demo-note">Protótipo visual com dados de demonstração. <button id="reset" style="border:0;background:none;color:var(--green);font-weight:600;text-decoration:underline;padding:0">Recomeçar demo</button></p>
+  <p class="demo-note whoami">Você entrou como <b id="whoName"></b> · <button id="logout" type="button">Sair</button></p>
 </main>
 
 <main class="wrap" id="library" hidden>
@@ -352,17 +402,17 @@ th{color:var(--muted);font-weight:600;font-size:12px}
 
 <main class="wrap" id="admin" hidden>
   <section class="admin-head">
-    <span class="badge-ex">Dados de exemplo</span>
+    <span class="badge-ex" id="admStamp">Atualizado agora</span>
     <h1>Painel da equipe</h1>
     <p style="margin:0;color:var(--muted)">Quanto tempo cada vendedor passou em cada material, se ouviu os áudios e como foi nos quizzes. Toque em um nome para ver o detalhe.</p>
   </section>
   <div class="kpis">
-    <div class="kpi"><b>15</b><small>vendedores</small></div>
-    <div class="kpi"><b>62%</b><small>trilha média</small></div>
-    <div class="kpi"><b>4h12</b><small>estudo / semana</small></div>
+    <div class="kpi"><b id="kpiN">–</b><small>vendedores</small></div>
+    <div class="kpi"><b id="kpiTrail">–</b><small>trilha média</small></div>
+    <div class="kpi"><b id="kpiWeek">–</b><small>estudo nos últimos 7 dias</small></div>
   </div>
   <div class="people" id="people"></div>
-  <p class="demo-note">No portal de verdade, esta aba só aparece para o admin.</p>
+  <p class="demo-note">Esta aba só aparece para quem é admin. <button id="admRefresh" type="button" style="border:0;background:none;color:var(--green);font-weight:600;text-decoration:underline;padding:0">Atualizar</button></p>
 </main>
 
 <section class="sheet" id="modSheet" aria-label="Módulo 1">
@@ -399,6 +449,7 @@ th{color:var(--muted);font-weight:600;font-size:12px}
 
 <svg width="0" height="0" style="position:absolute"><defs><linearGradient id="g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8792b"/><stop offset="1" stop-color="#b5573a"/></linearGradient></defs></svg>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
 const MODS=[
  {n:1,t:"Cultura OH! e Vendas 360º",s:"O DNA OH! e o orgulho de vender"},
@@ -410,11 +461,42 @@ const MODS=[
  {n:7,t:"Fechamento com Charme",s:"O sim leve e natural"},
  {n:8,t:"Entrega Perfeita e Fidelização",s:"A hora do show e o pós-venda"}];
 const LEVELS=[{n:"Aprendiz",min:0},{n:"Consultor",min:400},{n:"Especialista",min:1000},{n:"Mestre OH!",min:1650}];
-const KEY="ohacademy-demo-v1";
-let S={xp:0,done:[],steps:{}};
-try{const r=localStorage.getItem(KEY); if(r) S=Object.assign(S,JSON.parse(r));}catch(e){}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+/* ---------- Supabase ---------- */
+const SB_URL="https://nlvvkbybglpaortoeulg.supabase.co";
+const SB_KEY="sb_publishable_86eREnS9mPeAbVkyI48HfQ_W5_OKLMX";
+const LOGIN_DOMAIN="ohacademy.app";
+const sb=window.supabase?window.supabase.createClient(SB_URL,SB_KEY):null;
+let ME=null;
+let KEY="ohacademy";
+let S={xp:0,done:[],steps:{},seen:[]};
+// Só o que é preferência do aparelho fica no navegador (o que já foi visto como "Novo"); progresso e XP vêm do Supabase.
+function save(){try{localStorage.setItem(KEY+"-seen",JSON.stringify(S.seen))}catch(e){}}
+function loadSeen(){try{return JSON.parse(localStorage.getItem(KEY+"-seen")||"[]")}catch(e){return[]}}
 const $=s=>document.querySelector(s);
+
+// Passos que não conseguiram ser salvos (sem internet) ficam numa fila e são reenviados depois.
+function pend(){try{return JSON.parse(localStorage.getItem(KEY+"-pend")||"[]")}catch(e){return[]}}
+function setPend(a){try{localStorage.setItem(KEY+"-pend",JSON.stringify(a))}catch(e){}}
+async function salvarPasso(row){
+ if(!sb||!ME)return;
+ const {error}=await sb.from("progresso").insert(row);
+ if(error&&error.code!=="23505"){setPend(pend().concat([row]));toast("Sem conexão: seu progresso será salvo quando a internet voltar.")}}
+async function reenviar(){
+ const q=pend();if(!q.length||!sb||!ME)return;setPend([]);
+ for(const row of q){const {error}=await sb.from("progresso").insert(row);if(error&&error.code!=="23505")setPend(pend().concat([row]))}}
+addEventListener("online",reenviar);
+
+// Registro de uso para o painel do admin: tempo em cada material, cliques em visuais, áudios, quizzes.
+function registrar(tipo,{modulo=null,material=null,segundos=null,dados=null}={}){
+ if(!sb||!ME)return;
+ sb.from("eventos").insert({tipo,modulo,material,segundos,dados}).then(()=>{},()=>{})}
+let aberto=null,pausado=null;
+function abrirMaterial(modulo,material){fecharMaterial();aberto={modulo,material,t0:Date.now()}}
+function fecharMaterial(){if(!aberto)return;const seg=Math.round((Date.now()-aberto.t0)/1000);
+ if(seg>=3)registrar("tempo",{modulo:aberto.modulo,material:aberto.material,segundos:Math.min(seg,3600)});aberto=null}
+document.addEventListener("visibilitychange",()=>{
+ if(document.hidden){const a=aberto;fecharMaterial();pausado=a}
+ else if(pausado){abrirMaterial(pausado.modulo,pausado.material);pausado=null}});
 
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),2600)}
 
@@ -463,7 +545,7 @@ function openMod(n,b){const st=stateOf(n);
  if(st==="locked"){b.classList.remove("shake");void b.offsetWidth;b.classList.add("shake");toast(`Conclua o Módulo ${n-1} para liberar este.`);return}
  if(n!==1){toast(`No protótipo, só o Módulo 1 está montado. O Módulo ${n} entra na próxima fase.`);return}
  renderSteps();$("#modSheet").classList.add("show");$("#modSheet").scrollTop=0}
-$("#closeMod").onclick=()=>{$("#modSheet").classList.remove("show");renderTrail();renderXP()};
+$("#closeMod").onclick=()=>{fecharMaterial();$("#modSheet").classList.remove("show");renderTrail();renderXP()};
 
 /* ---------- Módulo 1 ---------- */
 const STEPS=[
@@ -485,13 +567,15 @@ function renderSteps(){const W=$("#steps");W.innerHTML="";
   c.innerHTML=`<button aria-expanded="false"><span class="ico">${s==="done"?"✓":s==="lock"?"🔒":i+1}</span><span class="st"><b>${st.t}</b><small>${s==="lock"?"Conclua o passo anterior":st.s}</small></span>${st.xp?`<span class="xp">+${st.xp} XP</span>`:""}</button><div class="body"></div>`;
   c.querySelector("button").onclick=()=>{if(s==="lock"){toast("Conclua o passo anterior primeiro.");return}
    const open=!c.classList.contains("expanded");document.querySelectorAll(".step").forEach(x=>x.classList.remove("expanded"));
+   if(open)abrirMaterial(1,st.id);else fecharMaterial();
    if(open){c.classList.add("expanded");fill(st.id,c.querySelector(".body"));c.querySelector("button").setAttribute("aria-expanded","true");setTimeout(()=>c.scrollIntoView({behavior:"smooth",block:"start"}),60)}};
   W.appendChild(c)});
  const n=STEPS.filter(x=>S.steps[x.id]).length;$("#mtxt").textContent=`${n} de 5`;
  requestAnimationFrame(()=>$("#mfill").style.width=(n/5*100)+"%")}
-function completeStep(id){if(S.steps[id])return;const st=STEPS.find(x=>x.id===id);S.steps[id]=true;S.xp+=st.xp;save();
+function completeStep(id,nota){if(S.steps[id])return;const st=STEPS.find(x=>x.id===id);S.steps[id]=true;S.xp+=st.xp;
+ salvarPasso({modulo:1,passo:id,xp:st.xp,nota:nota??null});
  if(st.xp)toast(`+${st.xp} XP! ${st.t.split(":")[0]} concluída.`);renderXP();
- if(id==="quiz"){S.done.includes(1)||S.done.push(1);save();setTimeout(celebrate,350)}
+ if(id==="quiz"){S.done.includes(1)||S.done.push(1);setTimeout(celebrate,350)}
  renderSteps();const nx=STEPS[STEPS.indexOf(st)+1];if(nx)setTimeout(()=>$("#st-"+nx.id+" > button").click(),400)}
 
 function fill(id,el){
@@ -507,7 +591,7 @@ function fill(id,el){
   el.innerHTML=`<p><strong>“Vendedor? Ah, aquele chato que empurra coisa.”</strong> Na OH! a pergunta é outra: você tem ORGULHO de vender?</p><p class="hint">Vire os 3 cards para liberar o próximo passo.</p><div class="flips">${cards.map((c,i)=>`<button class="flip" data-i="${i}" aria-label="${c[0]}"><span class="in"><span class="f"><b>${c[0]}</b><small>${c[1]}</small></span><span class="b"><strong>${c[0]}</strong><span>${c[2]}</span></span></span></button>`).join("")}</div>
   <div class="case"><b>Caso de balcão</b>A Dona Marta chegou dizendo que “não enxergava mais o crochê”. Saiu com o multifocal certo e, uma semana depois, voltou com uma manta de presente pra loja.</div>
   <button class="cta" disabled>Concluir aula</button>`;
-  const seen=new Set();el.querySelectorAll(".flip").forEach(f=>f.onclick=()=>{f.classList.toggle("on");seen.add(f.dataset.i);if(seen.size===3)el.querySelector(".cta").disabled=false});
+  const seen=new Set();el.querySelectorAll(".flip").forEach(f=>f.onclick=()=>{f.classList.toggle("on");registrar("clique_visual",{modulo:1,material:"a11",dados:{card:cards[f.dataset.i][0]}});seen.add(f.dataset.i);if(seen.size===3)el.querySelector(".cta").disabled=false});
   el.querySelector(".cta").onclick=()=>completeStep("a11")}
  if(id==="a12"){el.innerHTML=`<p><strong>Você é feliz vendendo?</strong> O cliente sente. A venda começa na sua cabeça, antes do cliente passar pela porta. O vendedor campeão não tem sorte, tem rotina.</p>
   <p class="hint">Marque a rotina que você vai seguir amanhã.</p>
@@ -516,16 +600,39 @@ function fill(id,el){
   <button class="cta" disabled>Concluir aula</button>`;
   const boxes=[...el.querySelectorAll("input")];boxes.forEach(b=>b.onchange=()=>el.querySelector(".cta").disabled=!boxes.every(x=>x.checked));
   el.querySelector(".cta").onclick=()=>completeStep("a12")}
- if(id==="audio"){el.innerHTML=`<div class="player" id="pl"><button class="pp" aria-label="Tocar">▶</button><div class="meta"><b>Comunicação Interpessoal</b><small>Podcast OH! · demonstração</small><div class="wave">${Array.from({length:32},(_,i)=>`<i style="height:${30+Math.abs(Math.sin(i*1.7))*70}%"></i>`).join("")}</div></div><span class="pct">0%</span></div>
-  <p class="hint">No portal, aqui toca o seu MP3 de verdade e o admin vê quanto foi ouvido. Na demo, o áudio é simulado em 8 segundos.</p>`;
-  const pl=el.querySelector("#pl"),pp=pl.querySelector(".pp"),bars=[...pl.querySelectorAll(".wave i")],pc=pl.querySelector(".pct");let p=0,t=null;
-  pp.onclick=()=>{if(t){clearInterval(t);t=null;pl.classList.remove("playing");pp.textContent="▶";return}
-   pl.classList.add("playing");pp.textContent="❚❚";t=setInterval(()=>{p=Math.min(100,p+1.25);pc.textContent=Math.round(p)+"%";bars.forEach((b,i)=>b.classList.toggle("on",i/bars.length*100<p));
-    if(p>=100){clearInterval(t);t=null;pl.classList.remove("playing");pp.textContent="✓";completeStep("audio")}},100)}}
+ if(id==="audio"){el.innerHTML=`<div class="player" id="pl"><button class="pp" aria-label="Tocar">▶</button><div class="meta"><b>Cultura da OH!</b><small>Podcast OH! · cerca de 20 min</small><div class="wave">${Array.from({length:32},(_,i)=>`<i style="height:${30+Math.abs(Math.sin(i*1.7))*70}%"></i>`).join("")}</div></div><span class="pct">0%</span></div>
+  <div class="pl-ctrl" hidden><button data-j="-15" aria-label="Voltar 15 segundos">−15s</button><button data-j="15" aria-label="Avançar 15 segundos">+15s</button><span class="sp"></span><button data-r="1" aria-pressed="true">1x</button><button data-r="1.25" aria-pressed="false">1,25x</button><button data-r="1.5" aria-pressed="false">1,5x</button></div>
+  <p class="hint" id="plHint">Carregando o áudio…</p>`;
+  const pl=el.querySelector("#pl"),pp=pl.querySelector(".pp"),bars=[...pl.querySelectorAll(".wave i")],pc=pl.querySelector(".pct"),hint=el.querySelector("#plHint");
+  let marco=0;
+  const mostrar=p=>{pc.textContent=Math.round(p)+"%";bars.forEach((b,i)=>b.classList.toggle("on",i/bars.length*100<p));
+   const m=Math.floor(p/25)*25;if(m>marco){marco=m;registrar("audio",{modulo:1,material:"audio",dados:{pct:m}})}};
+  const fim=()=>{pl.classList.remove("playing");pp.textContent="✓";completeStep("audio")};
+  (sb?sb.storage.from("materiais").createSignedUrl("m1/podcast-cultura-oh.mp3",6*3600):Promise.resolve({})).then(({data})=>{
+   if(data?.signedUrl){
+    // Áudio de verdade, guardado na pasta privada do Supabase; retoma de onde parou.
+    const au=new Audio(data.signedUrl);au.preload="metadata";const PK=KEY+"-pos-m1";
+    hint.textContent="Ouça até o fim para liberar o quiz. Dá pra pausar e continuar depois.";el.querySelector(".pl-ctrl").hidden=false;
+    au.addEventListener("loadedmetadata",()=>{const t=+localStorage.getItem(PK)||0;if(t&&t<au.duration-5)au.currentTime=t});
+    au.addEventListener("timeupdate",()=>{if(au.duration){mostrar(au.currentTime/au.duration*100);try{localStorage.setItem(PK,au.currentTime)}catch(e){}}});
+    au.addEventListener("play",()=>{pl.classList.add("playing");pp.textContent="❚❚";pp.setAttribute("aria-label","Pausar")});
+    au.addEventListener("pause",()=>{pl.classList.remove("playing");if(!au.ended){pp.textContent="▶";pp.setAttribute("aria-label","Tocar")}});
+    au.addEventListener("ended",()=>{try{localStorage.removeItem(PK)}catch(e){}mostrar(100);fim()});
+    pp.onclick=()=>{if(au.paused){au.play().catch(()=>toast("Não deu pra tocar o áudio. Confira sua internet."));registrar("play_audio",{modulo:1,material:"audio"})}else au.pause()};
+    el.querySelectorAll("[data-j]").forEach(b=>b.onclick=()=>{au.currentTime=Math.max(0,Math.min(au.duration||0,au.currentTime+ +b.dataset.j))});
+    el.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{au.playbackRate=+b.dataset.r;el.querySelectorAll("[data-r]").forEach(x=>x.setAttribute("aria-pressed",x===b))});
+    new MutationObserver((_,o)=>{if(!el.isConnected||!el.closest(".expanded")){au.pause();o.disconnect()}}).observe($("#steps"),{subtree:true,childList:true,attributes:true,attributeFilter:["class"]});
+    return}
+   // Enquanto o MP3 não estiver no Supabase, o áudio é simulado em 8 segundos.
+   hint.textContent="O áudio deste módulo ainda não foi enviado. Por enquanto, a reprodução é simulada.";let p=0,t=null;
+   pp.onclick=()=>{if(t){clearInterval(t);t=null;pl.classList.remove("playing");pp.textContent="▶";return}
+    pl.classList.add("playing");pp.textContent="❚❚";registrar("play_audio",{modulo:1,material:"audio"});
+    t=setInterval(()=>{p=Math.min(100,p+1.25);mostrar(p);if(p>=100){clearInterval(t);t=null;fim()}},100)}})}
  if(id==="quiz"){quizAns={};el.innerHTML=QUIZ.map((q,i)=>`<div class="q"><p>${i+1}. ${q.q}</p><div class="opts">${q.o.map((o,j)=>`<button class="opt" data-q="${i}" data-o="${j}">${o}</button>`).join("")}</div></div>`).join("")+`<button class="cta" id="send" disabled>Enviar respostas</button><div id="res"></div>`;
   el.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{const q=b.dataset.q;el.querySelectorAll(`.opt[data-q="${q}"]`).forEach(x=>x.classList.remove("sel","right","wrong"));b.classList.add("sel");quizAns[q]=+b.dataset.o;el.querySelector("#send").disabled=Object.keys(quizAns).length<5});
   el.querySelector("#send").onclick=()=>{let ok=0;QUIZ.forEach((q,i)=>{el.querySelectorAll(`.opt[data-q="${i}"]`).forEach(x=>{x.classList.remove("sel");if(+x.dataset.o===q.a)x.classList.add("right");else if(quizAns[i]===+x.dataset.o)x.classList.add("wrong")});if(quizAns[i]===q.a)ok++});
-   const r=el.querySelector("#res");if(ok>=4){r.innerHTML=`<div class="result ok">${ok} de 5! Módulo concluído.</div>`;completeStep("quiz")}else{r.innerHTML=`<div class="result no">${ok} de 5. Precisa de 4 para passar. Revise as respostas em verde e tente de novo.</div>`;el.querySelector("#send").textContent="Tentar de novo";el.querySelector("#send").onclick=()=>fill("quiz",el)}}}
+   registrar("quiz",{modulo:1,material:"quiz",dados:{acertos:ok}});
+   const r=el.querySelector("#res");if(ok>=4){r.innerHTML=`<div class="result ok">${ok} de 5! Módulo concluído.</div>`;completeStep("quiz",ok)}else{r.innerHTML=`<div class="result no">${ok} de 5. Precisa de 4 para passar. Revise as respostas em verde e tente de novo.</div>`;el.querySelector("#send").textContent="Tentar de novo";el.querySelector("#send").onclick=()=>fill("quiz",el)}}}
 }
 
 /* ---------- conquista ---------- */
@@ -535,15 +642,48 @@ function confetti(){if(matchMedia("(prefers-reduced-motion: reduce)").matches)re
  const cols=["#e8792b","#2f6b4f","#b5573a","#d9b99b","#f6b27a"];const P=Array.from({length:140},()=>({x:innerWidth/2,y:innerHeight/2.4,vx:(Math.random()-.5)*14,vy:Math.random()*-14-4,r:Math.random()*6+4,c:cols[Math.random()*5|0],a:Math.random()*6}));let f=0;
  (function loop(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.a+=.2;x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.c;x.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);x.restore()});if(++f<160)requestAnimationFrame(loop);else x.clearRect(0,0,c.width,c.height)})()}
 
-/* ---------- admin (exemplo) ---------- */
-const PEOPLE=[
- {n:"Ana Souza",l:"OH! Centro",c:"#2f6b4f",m:3,xp:560,rows:[["Abertura","4 min","—","—"],["Aula 1.1","9 min","—","—"],["Aula 1.2","7 min","—","—"],["Podcast","—","100%","—"],["Quiz","3 min","—","5/5"]]},
- {n:"Bruno Lima",l:"OH! Shopping",c:"#b5573a",m:2,xp:240,rows:[["Abertura","2 min","—","—"],["Aula 1.1","5 min","—","—"],["Aula 1.2","4 min","—","—"],["Podcast","—","65%","—"],["Quiz","2 min","—","4/5"]]},
- {n:"Carla Dias",l:"Ótica Parceira Visão",c:"#e8792b",m:1,xp:50,rows:[["Abertura","1 min","—","—"],["Aula 1.1","6 min","—","—"],["Aula 1.2","—","—","—"],["Podcast","—","0%","—"],["Quiz","—","—","—"]]},
- {n:"Diego Rocha",l:"OH! Centro",c:"#d9b99b",m:5,xp:1010,rows:[["Abertura","3 min","—","—"],["Aula 1.1","8 min","—","—"],["Aula 1.2","8 min","—","—"],["Podcast","—","100%","—"],["Quiz","2 min","—","5/5"]]}];
-function renderPeople(){$("#people").innerHTML=PEOPLE.map((p,i)=>`<article class="person"><button aria-expanded="false"><span class="av" style="background:${p.c}">${p.n[0]}</span><span class="who"><b>${p.n}</b><small>${p.l} · Módulo ${p.m} · ${p.xp} XP</small></span><span class="mini"><i style="width:${(p.m-1)/8*100+6}%"></i></span></button>
- <div class="detail"><div class="eyebrow" style="margin:4px 0 6px">Módulo 1, aula por aula</div><div class="tbl"><table><thead><tr><th>Material</th><th>Tempo</th><th>Áudio ouvido</th><th>Quiz</th></tr></thead><tbody>${p.rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]==="—"?"—":`<span class="chip ${r[2]==="100%"?"y":"n"}">${r[2]}</span>`}</td><td>${r[3]}</td></tr>`).join("")}</tbody></table></div></div></article>`).join("");
+/* ---------- admin ---------- */
+const AV=["#2f6b4f","#b5573a","#e8792b","#c99a73","#3f8a5f","#8a3f29"];
+const esc=t=>String(t??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const minutos=s=>!s?"—":s<60?"<1 min":s<3600?Math.round(s/60)+" min":Math.floor(s/3600)+"h"+String(Math.round(s%3600/60)).padStart(2,"0");
+const quando=d=>{if(!d)return"nunca entrou";const h=(Date.now()-new Date(d))/36e5;return h<1?"ativo agora":h<24?"hoje":h<48?"ontem":`há ${Math.floor(h/24)} dias`};
+async function renderPeople(){
+ if(!sb||ME?.papel!=="admin")return;
+ const box=$("#people");if(!box.children.length)box.innerHTML='<p class="demo-note">Carregando a equipe…</p>';
+ const [pf,pr,ev]=await Promise.all([
+  sb.from("perfis").select("id,nome,loja,papel,ativo").order("nome"),
+  sb.from("progresso").select("usuario_id,modulo,passo,xp,nota"),
+  sb.from("eventos").select("usuario_id,tipo,modulo,material,segundos,dados,criado_em").order("criado_em",{ascending:false}).limit(10000)]);
+ if(pf.error||pr.error||ev.error){box.innerHTML='<p class="demo-note">Não consegui carregar os dados agora. Toque em Atualizar.</p>';return}
+ const equipe=pf.data.filter(p=>p.papel!=="admin"&&p.ativo!==false);
+ const semana=Date.now()-7*864e5;
+ const dados=equipe.map((p,i)=>{
+  const meu=pr.data.filter(r=>r.usuario_id===p.id),evs=ev.data.filter(e=>e.usuario_id===p.id);
+  const done=new Set(meu.filter(r=>r.passo==="quiz").map(r=>r.modulo));
+  const xp=meu.reduce((a,r)=>a+r.xp,0);
+  const tempo=m=>evs.filter(e=>e.tipo==="tempo"&&e.modulo===1&&e.material===m).reduce((a,e)=>a+e.segundos,0);
+  const cliques=m=>evs.filter(e=>e.tipo==="clique_visual"&&e.material===m).length;
+  const audio=Math.max(-1,...evs.filter(e=>e.tipo==="audio").map(e=>e.dados?.pct||0));
+  const deuPlay=evs.some(e=>e.tipo==="play_audio");
+  const quiz=meu.find(r=>r.modulo===1&&r.passo==="quiz");const tent=evs.filter(e=>e.tipo==="quiz"&&e.modulo===1);
+  const rows=STEPS.map(st=>{
+   const fez=meu.some(r=>r.modulo===1&&r.passo===st.id);
+   let au="—",qz="—";
+   if(st.id==="audio")au=audio>=0?audio+"%":deuPlay?"0%":"—";
+   if(st.id==="quiz")qz=quiz?`${quiz.nota??"✓"}/5`:tent.length?`${tent[0].dados?.acertos??0}/5 (${tent.length}x)`:"—";
+   const c=cliques(st.id);
+   return[st.t.split(":")[0]+(fez?" ✓":""),minutos(tempo(st.id))+(c?` · ${c} cliques`:""),au,qz]});
+  const semanaSeg=evs.filter(e=>e.tipo==="tempo"&&new Date(e.criado_em)>semana).reduce((a,e)=>a+e.segundos,0);
+  return{n:p.nome,l:p.loja||"Loja não informada",c:AV[i%AV.length],m:Math.min(8,done.size+1),done:done.size,xp,rows,semanaSeg,ult:evs[0]?.criado_em}});
+ $("#kpiN").textContent=equipe.length;
+ $("#kpiTrail").textContent=equipe.length?Math.round(dados.reduce((a,d)=>a+d.done,0)/(equipe.length*8)*100)+"%":"–";
+ $("#kpiWeek").textContent=minutos(dados.reduce((a,d)=>a+d.semanaSeg,0))||"–";
+ $("#admStamp").textContent="Atualizado "+new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+ if(!dados.length){box.innerHTML='<p class="demo-note">Nenhum vendedor cadastrado ainda. Cadastre a equipe no Supabase (Authentication → Users).</p>';return}
+ box.innerHTML=dados.map(p=>`<article class="person"><button aria-expanded="false"><span class="av" style="background:${p.c}">${esc(p.n[0]||"?")}</span><span class="who"><b>${esc(p.n)}</b><small>${esc(p.l)} · Módulo ${p.m} · ${p.xp} XP · ${quando(p.ult)}</small></span><span class="mini"><i style="width:${p.done/8*100+6}%"></i></span></button>
+ <div class="detail"><div class="eyebrow" style="margin:4px 0 6px">Módulo 1, passo a passo</div><div class="tbl"><table><thead><tr><th>Material</th><th>Tempo</th><th>Áudio ouvido</th><th>Quiz</th></tr></thead><tbody>${p.rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]==="—"?"—":`<span class="chip ${r[2]==="100%"?"y":"n"}">${r[2]}</span>`}</td><td>${r[3]}</td></tr>`).join("")}</tbody></table></div></div></article>`).join("");
  document.querySelectorAll(".person>button").forEach(b=>b.onclick=()=>{const a=b.parentElement;a.classList.toggle("expanded");b.setAttribute("aria-expanded",a.classList.contains("expanded"))})}
+$("#admRefresh").onclick=renderPeople;
 
 /* ---------- Biblioteca ---------- */
 const LIB={
@@ -567,7 +707,7 @@ function renderLib(){const L=$("#libList");L.innerHTML="";
   box.innerHTML=`<header><span class="n">${m.n}</span><b>Módulo ${m.n}: ${m.t}</b></header>`+items.map(it=>{const nw=m.n>1&&!S.seen.includes(it.id);
    return `<button class="item${nw?" is-new":""}" data-id="${it.id}"><span class="ti ${it.k}">${TAG[it.k]}</span><span class="tx"><b>${it.t}${nw?'<span class="new">Novo</span>':""}</b><small>${it.s}</small></span></button>`}).join("");
   L.appendChild(box)});
- L.querySelectorAll(".item").forEach(b=>b.onclick=()=>{markSeen(b.dataset.id);b.classList.remove("is-new");b.querySelector(".new")?.remove();toast("No portal, o material abre aqui dentro e o tempo de leitura vai pro admin.")})}
+ L.querySelectorAll(".item").forEach(b=>b.onclick=()=>{markSeen(b.dataset.id);registrar("abriu",{modulo:+b.dataset.id.slice(1).split("-")[0],material:b.dataset.id});b.classList.remove("is-new");b.querySelector(".new")?.remove();toast("No portal, o material abre aqui dentro e o tempo de leitura vai pro admin.")})}
 
 /* ---------- Extras ---------- */
 const EXT=[
@@ -582,7 +722,7 @@ function renderExt(){const L=$("#extList");L.innerHTML="";
  EXT.filter(e=>extF==="all"||e.c===extF).sort((a,b)=>(b.nw&&!S.seen.includes(b.id))-(a.nw&&!S.seen.includes(a.id))).forEach(e=>{const nw=e.nw&&!S.seen.includes(e.id);
   const el=document.createElement(e.u?"a":"button");el.className="link"+(nw?" is-new":"");if(e.u){el.href=e.u;el.target="_blank";el.rel="noopener"}else{el.style.border="0";el.style.textAlign="left";el.style.width="100%"}
   el.innerHTML=`<span class="cov" style="background:${e.cov}">${e.lab}</span><span class="tx"><span class="cat">${e.c}${nw?'<span class="new">Novo</span>':""}</span><b>${e.t}</b><small>${e.s}</small></span>`;
-  el.addEventListener("click",()=>{markSeen(e.id);if(!e.u)toast("Pergunte ao cliente: o que você NÃO gosta no seu óculos atual?");setTimeout(renderExt,300)});L.appendChild(el)})}
+  el.addEventListener("click",()=>{markSeen(e.id);registrar("link_extra",{material:e.id,dados:{titulo:e.t}});if(!e.u)toast("Pergunte ao cliente: o que você NÃO gosta no seu óculos atual?");setTimeout(renderExt,300)});L.appendChild(el)})}
 
 function markSeen(id){if(!S.seen.includes(id)){S.seen.push(id);save();renderDots()}}
 function renderDots(){const a=libNewIds().length,b=extNewIds().length;const dl=$("#dotLib"),de=$("#dotExt");dl.hidden=!a;dl.textContent=a;de.hidden=!b;de.textContent=b}
@@ -591,13 +731,49 @@ bindFilters("#libFilters",f=>libF=f,renderLib);bindFilters("#extFilters",f=>extF
 
 /* ---------- navegação ---------- */
 const VIEWS=["seller","library","extras","admin"];
-function view(v){if(!VIEWS.includes(v))v="seller";VIEWS.forEach(x=>$("#"+x).hidden=x!==v);
+function view(v){if(!VIEWS.includes(v)||(v==="admin"&&ME?.papel!=="admin"))v="seller";VIEWS.forEach(x=>$("#"+x).hidden=x!==v);
  document.querySelectorAll(".dock button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===v));
- if(v==="seller")renderTrail();if(v==="library")renderLib();if(v==="extras")renderExt();
+ if(v==="seller")renderTrail();if(v==="library")renderLib();if(v==="extras")renderExt();if(v==="admin")renderPeople();
  scrollTo({top:0});try{localStorage.setItem(KEY+"-view",v)}catch(e){}}
 document.querySelectorAll(".dock button").forEach(b=>b.onclick=()=>view(b.dataset.v));
-$("#reset").onclick=()=>{S={xp:0,done:[],steps:{},seen:[],unlockedAt:{1:0}};save();renderXP();renderTrail();renderDots();toast("Demo recomeçada.")};
 
-renderPeople();renderXP();renderTrail();renderDots();
-let v0="seller";try{v0=VIEWS.includes(location.hash.slice(1))?location.hash.slice(1):(localStorage.getItem(KEY+"-view")||"seller")}catch(e){}view(v0);
+/* ---------- login ---------- */
+$("#loginLogo").appendChild(document.querySelector(".top .logo").cloneNode(true));
+function showLogin(msg){document.body.classList.add("auth");$("#login").hidden=false;$("#lgErr").textContent=msg||"";
+ $("#lgBtn").disabled=false;$("#lgBtn").textContent="Entrar";setTimeout(()=>$("#lgUser").focus(),50)}
+$("#loginForm").addEventListener("submit",async ev=>{ev.preventDefault();
+ const u=$("#lgUser").value.trim().toLowerCase(),pw=$("#lgPass").value;
+ if(!u||!pw){$("#lgErr").textContent="Preencha usuário e senha.";return}
+ if(!sb){$("#lgErr").textContent="Não foi possível conectar. Confira sua internet e recarregue a página.";return}
+ $("#lgErr").textContent="";$("#lgBtn").disabled=true;$("#lgBtn").textContent="Entrando…";
+ const email=u.includes("@")?u:`${u}@${LOGIN_DOMAIN}`;
+ const {data,error}=await sb.auth.signInWithPassword({email,password:pw});
+ if(error){showLogin(/invalid/i.test(error.message)?"Usuário ou senha incorretos.":"Não foi possível entrar agora. Tente de novo em instantes.");return}
+ $("#lgPass").value="";await entrar(data.user)});
+
+async function entrar(user){
+ const [perf,prog]=await Promise.all([
+  sb.from("perfis").select("id,nome,loja,papel,ativo").eq("id",user.id).maybeSingle(),
+  sb.from("progresso").select("modulo,passo,xp").eq("usuario_id",user.id)]);
+ if(perf.error||!perf.data||perf.data.ativo===false||prog.error){
+  await sb.auth.signOut();showLogin("Seu acesso ainda não está liberado. Fale com o admin da sua loja.");return}
+ ME=perf.data;KEY="ohacademy-"+ME.id;
+ S={xp:0,done:[],steps:{},seen:loadSeen()};
+ prog.data.forEach(r=>{S.xp+=r.xp;if(r.modulo===1)S.steps[r.passo]=true;if(r.passo==="quiz"&&!S.done.includes(r.modulo))S.done.push(r.modulo)});
+ const primeiro=(ME.nome||"").split(/[\s.]/)[0]||"";
+ $("#helloTitle").textContent=`Oi${primeiro?", "+primeiro[0].toUpperCase()+primeiro.slice(1):""}! Bora pro próximo passo?`;
+ $("#whoName").textContent=ME.nome;
+ document.querySelector('.dock button[data-v="admin"]').hidden=ME.papel!=="admin";
+ $("#login").hidden=true;document.body.classList.remove("auth");
+ renderXP();renderDots();
+ let v0="seller";try{v0=VIEWS.includes(location.hash.slice(1))?location.hash.slice(1):(localStorage.getItem(KEY+"-view")||"seller")}catch(e){}view(v0);
+ registrar("entrou");reenviar()}
+
+$("#logout").onclick=async()=>{fecharMaterial();await sb.auth.signOut();ME=null;
+ document.querySelector('.dock button[data-v="admin"]').hidden=true;showLogin()};
+
+(async function boot(){
+ if(!sb){showLogin("Não foi possível conectar. Confira sua internet e recarregue a página.");return}
+ const {data}=await sb.auth.getSession();
+ if(data.session)await entrar(data.session.user);else showLogin()})();
 </script>
