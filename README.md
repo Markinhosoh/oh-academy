@@ -23,8 +23,7 @@ Site estático no GitHub Pages: Settings → Pages → Deploy from a branch → 
 - Admin: `update public.perfis set papel = 'admin' where ...` (ver o guia).
 - Podcasts: ficam na pasta privada Storage → `materiais`, com o mesmo nome usado na página do material:
   - `m1/podcast-cultura-oh.mp3`, `m1/podcast-psicologia-atendimento.mp3`, `m1/podcast-autoimagem-vendedor.mp3`
-  - `m3/spin-selling.mp3`
-  - `m4/poder-da-autoimagem.mp3`
+  - Os módulos 2 a 8 ainda não têm podcast; os materiais deles usam o treino de balcão na etapa 2.
 
   Enquanto um MP3 não estiver lá, o material avisa que o áudio ainda está chegando.
 
