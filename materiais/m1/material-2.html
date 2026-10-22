@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Gente Vende Pra Gente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=Gochi+Hand&display=swap">
+<style>
+/* Mesmo padrão do Material 1 ("Propósito no Balcão"): coluna de leitura, areia, laranja e verde */
+:root{
+  --bg:#efe2c9; --paper:#f7eedc; --ink:#244a3a; --ink-soft:#4b6a5a;
+  --orange:#e9853a; --orange-deep:#c9661d; --green:#2f5d48; --terra:#b5573a; --line:#dcc9a6;
+  --on-accent:#fffaf0; --chip:#e6d3ae; --bad:#b5573a;
+  --display:"Fredoka","Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --body:"Nunito","Segoe UI",system-ui,sans-serif;
+  --hand:"Gochi Hand","Comic Sans MS",cursive;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1b221e; --paper:#232c27; --ink:#efe3cc; --ink-soft:#bcb19c;
+  --orange:#f09a55; --orange-deep:#f3a96c; --green:#7fb79a; --terra:#e08a6c; --line:#36423b;
+  --on-accent:#1b221e; --chip:#2d3832; --bad:#e08a6c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1b221e; --paper:#232c27; --ink:#efe3cc; --ink-soft:#bcb19c;
+  --orange:#f09a55; --orange-deep:#f3a96c; --green:#7fb79a; --terra:#e08a6c; --line:#36423b;
+  --on-accent:#1b221e; --chip:#2d3832; --bad:#e08a6c; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 96px}
+.wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--display);text-transform:uppercase;letter-spacing:.03em;line-height:1.1;margin:0;text-wrap:balance}
+h2{font-size:clamp(24px,5vw,32px);color:var(--orange-deep)}
+h3{font-size:19px;color:var(--green)}
+p{margin:0}
+button{font:inherit;color:inherit}
+.eyebrow{font-family:var(--display);font-weight:600;text-transform:uppercase;letter-spacing:.12em;font-size:13px;color:var(--ink-soft)}
+.hand{font-family:var(--hand)}
+section{display:flex;flex-direction:column;gap:18px}
+.lead{font-size:19px;font-weight:600}
+strong{color:var(--orange-deep)}
+.hint{font-size:14px;color:var(--ink-soft);font-weight:700}
+:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
+
+/* topo */
+header{padding-top:28px;display:flex;flex-direction:column;gap:22px}
+.brandrow{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.logo{font-family:var(--hand);font-size:34px;color:var(--green);line-height:1}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{background:var(--chip);color:var(--ink);font-weight:700;font-size:13px;padding:5px 12px;border-radius:999px}
+h1{font-size:clamp(40px,10vw,72px);color:var(--orange);font-weight:700}
+h1 span{display:block;color:var(--green)}
+.subtitle{font-size:20px;font-weight:700;max-width:36ch}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.steps li{background:var(--paper);border:2px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:4px;min-width:0;transition:border-color .3s}
+.steps b{font-family:var(--display);font-size:28px;color:var(--orange);line-height:1}
+.steps span{font-weight:800;font-size:15px}
+.steps small{color:var(--ink-soft);font-size:13px}
+.steps li.done{border-color:var(--green)}
+.steps li.done b::after{content:" ✓";color:var(--green);font-size:22px}
+@media (max-width:520px){.steps{grid-template-columns:1fr}.steps li{flex-direction:row;align-items:baseline;gap:10px;flex-wrap:wrap}}
+
+/* definição */
+.definition{background:var(--paper);border-radius:22px;padding:24px;border:2px dashed var(--line);display:flex;flex-direction:column;gap:8px}
+.definition p{font-size:19px;font-weight:700}
+.definition em{font-style:normal;color:var(--orange-deep)}
+.definition .hand{font-size:22px;color:var(--green)}
+
+/* cena do garçom */
+.scene{display:flex;flex-direction:column;gap:12px}
+.bubble{background:var(--paper);border:2px solid var(--line);border-radius:20px 20px 20px 6px;padding:16px 18px;max-width:88%;font-weight:700;position:relative}
+.bubble small{display:block;font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px}
+.bubble.me{align-self:flex-end;border-radius:20px 20px 6px 20px;background:var(--chip);border-color:transparent;font-family:var(--hand);font-size:21px;font-weight:400}
+.big{font-family:var(--display);font-size:clamp(28px,6.5vw,42px);color:var(--green);text-transform:uppercase;line-height:1.08;font-weight:700;text-wrap:balance}
+.big span{color:var(--orange)}
+
+/* é / não é */
+.versus{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.versus div{border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.versus .yes{background:var(--green);color:var(--on-accent)}
+.versus .no{background:var(--paper);border:2px solid var(--line)}
+.versus b{font-family:var(--display);text-transform:uppercase;font-size:18px}
+.versus ul{margin:0;padding-left:18px;font-size:15px;font-weight:600}
+.versus .no b{color:var(--bad)}
+.versus .no li{text-decoration:line-through;text-decoration-color:var(--bad);text-decoration-thickness:2px}
+@media (max-width:480px){.versus{grid-template-columns:1fr}}
+
+/* termômetro */
+.thermo{display:grid;grid-template-columns:70px 1fr;gap:18px;align-items:stretch}
+.tube{position:relative;width:34px;margin:0 auto;border-radius:20px;background:var(--paper);border:3px solid var(--line);min-height:240px;overflow:hidden}
+.tube i{position:absolute;left:0;right:0;bottom:0;height:8%;background:linear-gradient(var(--orange),var(--terra));transition:height .7s cubic-bezier(.3,1.4,.5,1)}
+.signs{display:flex;flex-direction:column;gap:10px}
+.sign{display:flex;gap:12px;align-items:center;text-align:left;background:var(--paper);border:2px solid var(--line);border-radius:16px;padding:12px 14px;cursor:pointer;font-weight:700;transition:transform .2s,border-color .2s,background .2s}
+.sign:hover{transform:translateX(4px)}
+.sign .dot{flex:none;width:26px;height:26px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:14px;color:var(--on-accent);transition:background .2s,border-color .2s}
+.sign[aria-pressed="true"]{border-color:var(--orange)}
+.sign[aria-pressed="true"] .dot{background:var(--orange);border-color:var(--orange)}
+.thermo-msg{font-family:var(--hand);font-size:22px;color:var(--green);min-height:1.4em}
+
+/* abas do como fazer */
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tabs button{border:2px solid var(--green);background:transparent;border-radius:999px;padding:6px 16px;font-weight:800;cursor:pointer;color:var(--green)}
+.tabs button[aria-selected="true"]{background:var(--green);color:var(--on-accent)}
+.panel{background:var(--paper);border-radius:22px;padding:22px;border:2px solid var(--line);display:flex;flex-direction:column;gap:12px}
+.panel[hidden]{display:none}
+.say{font-family:var(--hand);font-size:22px;color:var(--orange-deep);line-height:1.3}
+.panel .note{font-weight:700;color:var(--green)}
+.pace{display:flex;gap:12px;flex-wrap:wrap}
+.pace div{flex:1 1 180px;border-top:4px solid var(--orange);padding-top:8px;font-size:15px}
+.pace b{display:block;font-family:var(--display);text-transform:uppercase;color:var(--green)}
+.banner{background:var(--green);color:var(--on-accent);border-radius:22px;padding:22px;font-family:var(--display);font-size:clamp(20px,4.6vw,26px);text-transform:uppercase;line-height:1.2;font-weight:600}
+.banner span{color:var(--orange)}
+:root[data-theme="dark"] .banner span{color:var(--on-accent);text-decoration:underline}
+
+/* flips: tipos de cliente */
+.flips{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media (max-width:600px){.flips{grid-template-columns:1fr}}
+.flip{perspective:900px;border:0;background:none;padding:0;cursor:pointer;min-height:220px;text-align:left}
+.flip .in{position:relative;display:block;width:100%;height:100%;min-height:220px;transition:transform .6s cubic-bezier(.3,1.3,.5,1);transform-style:preserve-3d}
+.flip.on .in{transform:rotateY(180deg)}
+.flip .f,.flip .b{position:absolute;inset:0;backface-visibility:hidden;border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:8px}
+.flip .f{background:var(--orange);color:var(--on-accent);justify-content:space-between}
+.flip .f b{font-family:var(--display);font-size:24px;text-transform:uppercase;line-height:1.05}
+.flip .f small{font-weight:700;opacity:.9}
+.flip .f .emo{font-size:40px;line-height:1}
+.flip .b{background:var(--paper);border:2px solid var(--orange);transform:rotateY(180deg);font-size:15px}
+.flip .b strong{font-family:var(--display);text-transform:uppercase;color:var(--green);font-size:16px}
+.flip .b .say{font-size:18px}
+@media (prefers-reduced-motion:reduce){.flip .in{transition:none}}
+
+/* tradutor */
+.translator{display:flex;flex-direction:column;gap:14px}
+.heard{background:var(--chip);border-radius:20px 20px 20px 6px;padding:16px 18px;font-family:var(--hand);font-size:24px;max-width:90%}
+.channels{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media (max-width:520px){.channels{grid-template-columns:repeat(2,1fr)}}
+.channels div{background:var(--paper);border:2px solid var(--line);border-radius:14px;padding:10px;text-align:center;font-weight:800;font-size:14px;display:flex;flex-direction:column;align-items:center;gap:6px;transition:border-color .3s,transform .3s}
+.channels svg{width:28px;height:28px;stroke:var(--green);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.channels div.lit{border-color:var(--orange);transform:translateY(-3px)}
+.decode{align-self:flex-start;background:var(--orange);color:var(--on-accent);border:0;border-radius:999px;padding:10px 20px;font-weight:800;cursor:pointer}
+.decoded{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media (max-width:520px){.decoded{grid-template-columns:1fr}}
+.decoded div{background:var(--green);color:var(--on-accent);border-radius:16px;padding:14px;font-weight:700;font-size:15px;opacity:0;transform:translateY(10px);transition:opacity .4s,transform .4s}
+.decoded.show div{opacity:1;transform:none}
+.decoded.show div:nth-child(2){transition-delay:.15s}
+.decoded.show div:nth-child(3){transition-delay:.3s}
+.decoded b{display:block;font-family:var(--display);text-transform:uppercase;font-size:17px}
+
+/* corpo */
+.quote{border-left:5px solid var(--orange);padding:6px 0 6px 18px;font-size:19px;font-weight:700}
+.quote small{display:block;font-weight:600;color:var(--ink-soft);font-size:14px;margin-top:4px}
+.posture{display:grid;grid-template-columns:minmax(0,170px) 1fr;gap:22px;align-items:center}
+@media (max-width:520px){.posture{grid-template-columns:1fr;justify-items:center}}
+.posture svg{width:100%;max-width:170px}
+.posture ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.posture li{display:grid;grid-template-columns:12px 1fr;gap:10px;align-items:baseline;font-weight:600}
+.posture li::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--orange)}
+.fig{transition:transform .5s ease}
+.fig.slouch{transform:rotate(-7deg) translateY(6px);transform-origin:50% 100%}
+.toggle{display:flex;gap:8px;flex-wrap:wrap}
+.toggle button{border:2px solid var(--line);background:var(--paper);border-radius:999px;padding:5px 14px;font-weight:800;cursor:pointer;font-size:14px}
+.toggle button[aria-pressed="true"]{border-color:var(--orange);background:var(--orange);color:var(--on-accent)}
+
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:520px){.compare{grid-template-columns:1fr}}
+.compare div{border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:8px}
+.compare .bad{background:var(--paper);border:2px solid var(--line)}
+.compare .good{background:var(--orange);color:var(--on-accent)}
+.compare .tag{font-family:var(--display);text-transform:uppercase;font-size:14px;letter-spacing:.08em}
+.compare .bad .tag{color:var(--bad)}
+.compare .say{font-size:20px}
+.compare .good .say{color:var(--on-accent)}
+.compare small{font-weight:700;font-size:14px;opacity:.9}
+
+.gest{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:520px){.gest{grid-template-columns:1fr}}
+.gest div{border-top:4px solid var(--green);padding-top:10px}
+.gest div.minus{border-color:var(--bad)}
+.gest b{font-family:var(--display);text-transform:uppercase;color:var(--green)}
+.gest .minus b{color:var(--bad)}
+.gest ul{margin:6px 0 0;padding-left:18px;font-size:15px;font-weight:600}
+
+.feet{display:grid;grid-template-columns:minmax(0,260px) 1fr;gap:20px;align-items:center}
+@media (max-width:560px){.feet{grid-template-columns:1fr;justify-items:center}}
+.feet svg{width:100%;max-width:260px}
+.foot{transition:transform .6s cubic-bezier(.3,1.3,.5,1);transform-box:fill-box;transform-origin:center}
+.feet-msg{font-weight:700}
+
+.pause{display:flex;flex-direction:column;gap:10px;background:var(--paper);border-radius:22px;padding:20px;border:2px solid var(--line)}
+.pause-line{display:flex;align-items:center;gap:10px;font-weight:700;flex-wrap:wrap}
+.pause-bar{flex:1 1 120px;height:12px;border-radius:99px;background:var(--chip);overflow:hidden;position:relative}
+.pause-bar i{position:absolute;inset:0 auto 0 0;width:0;background:var(--green)}
+.pause-bar.run i{animation:breathe 2s linear forwards}
+@keyframes breathe{to{width:100%}}
+.pause button{align-self:flex-start;border:2px solid var(--green);background:transparent;color:var(--green);border-radius:999px;padding:6px 16px;font-weight:800;cursor:pointer}
+
+/* emocional */
+.emo-wrap{display:grid;grid-template-columns:minmax(0,200px) 1fr;gap:22px;align-items:center}
+@media (max-width:520px){.emo-wrap{grid-template-columns:1fr;justify-items:center}}
+.donut{width:100%;max-width:200px}
+.donut .arc{transition:stroke-dashoffset 1.6s cubic-bezier(.3,1,.4,1)}
+.donut text{font-family:var(--display);font-weight:700}
+.read10{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:520px){.read10{grid-template-columns:1fr}}
+.read10 div{background:var(--paper);border:2px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.read10 b{font-family:var(--display);text-transform:uppercase;color:var(--green)}
+.read10 .say{font-size:19px}
+.phrases{display:flex;flex-wrap:wrap;gap:8px}
+.phrases span{background:var(--orange);color:var(--on-accent);border-radius:999px;padding:8px 14px;font-weight:700;font-size:15px}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media (max-width:600px){.rules{grid-template-columns:1fr}}
+.rules div{background:var(--green);color:var(--on-accent);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:6px;font-size:15px}
+.rules b{font-family:var(--display);text-transform:uppercase;font-size:18px}
+
+/* resumão */
+.tbl{border:2px solid var(--line);border-radius:18px;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{padding:12px 14px;text-align:left;vertical-align:top}
+th{font-family:var(--display);text-transform:uppercase;font-size:13px;letter-spacing:.08em;background:var(--chip)}
+tr+tr td{border-top:1px solid var(--line)}
+td:first-child{font-weight:800}
+td:last-child{color:var(--green);font-weight:700}
+
+/* frase */
+.motto{background:var(--orange);color:var(--on-accent);border-radius:28px;padding:34px 26px}
+.motto .hand{font-size:20px;opacity:.9}
+.motto blockquote{margin:8px 0 0;font-family:var(--display);font-weight:600;font-size:clamp(24px,5.4vw,34px);line-height:1.2;text-wrap:balance}
+
+/* podcast */
+.pod{background:var(--green);color:var(--on-accent);border-radius:26px;padding:24px;display:flex;flex-direction:column;gap:16px}
+.pod h2{color:var(--on-accent)}
+.pod p{opacity:.9}
+.player{display:grid;grid-template-columns:64px 1fr;gap:16px;align-items:center}
+.play{width:64px;height:64px;border-radius:50%;border:0;background:var(--orange);color:var(--on-accent);cursor:pointer;display:grid;place-items:center}
+.play svg{width:26px;height:26px;fill:currentColor}
+.track{display:flex;flex-direction:column;gap:6px;min-width:0}
+.track input[type=range]{width:100%;accent-color:var(--orange)}
+.times{display:flex;justify-content:space-between;font-variant-numeric:tabular-nums;font-size:14px;font-weight:700}
+.speed{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:14px}
+.speed button{border:2px solid currentColor;background:transparent;color:inherit;border-radius:999px;padding:3px 12px;font-weight:800;cursor:pointer}
+.speed button[aria-pressed="true"]{background:var(--on-accent);color:var(--green);border-color:var(--on-accent)}
+.skip{display:flex;gap:6px}
+
+/* reflexão */
+.reflect{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px}
+.reflect li{background:var(--paper);border-radius:16px;padding:16px 18px;border:2px solid var(--line);font-weight:700}
+.reflect li span{display:block;font-weight:600;color:var(--ink-soft);font-size:15px;margin-top:4px}
+.checks{display:flex;flex-direction:column;gap:10px}
+.check{display:flex;gap:12px;align-items:center;font-weight:700;cursor:pointer}
+.check input{width:22px;height:22px;accent-color:var(--green)}
+footer{text-align:center;color:var(--ink-soft);font-size:14px;display:flex;flex-direction:column;gap:6px;align-items:center}
+footer .logo{font-size:28px}
+
+/* entrada suave das seções */
+@media (prefers-reduced-motion:no-preference){
+  header>*{animation:rise .6s ease both}
+  header>*:nth-child(2){animation-delay:.08s}
+  header>*:nth-child(3){animation-delay:.16s}
+  header>*:nth-child(4){animation-delay:.24s}
+  @keyframes rise{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
+  .reveal{transition:opacity .6s ease,transform .6s ease}
+  .reveal.pre{opacity:.35;transform:translateY(18px)}
+}
+</style>
+</head><body>
+<div class="wrap">
+  <header>
+    <div class="brandrow">
+      <div class="logo">+ OH!</div>
+      <div class="chips"><span class="chip">Módulo 1 · Cultura OH!</span><span class="chip">Material 2</span></div>
+    </div>
+    <h1>Gente vende <span>pra gente</span></h1>
+    <p class="subtitle">A psicologia do atendimento OH!: rapport, escuta e linguagem corporal pra conquistar antes de vender.</p>
+    <ol class="steps" aria-label="Como fazer este material">
+      <li id="st-ler"><b>1</b><span>Leia</span><small>uns 8 minutos</small></li>
+      <li id="st-ouvir"><b>2</b><span>Ouça o podcast</span><small>cerca de 20 minutos</small></li>
+      <li id="st-refletir"><b>3</b><span>Reflita</span><small>3 perguntas pro seu balcão</small></li>
+    </ol>
+  </header>
+
+  <!-- 1. Rapport -->
+  <section class="reveal">
+    <p class="eyebrow">Parte 1 · Rapport</p>
+    <h2>Você não vende pra quem não confia em você</h2>
+    <p>Imagina que você entra num restaurante e o garçom já chega assim:</p>
+    <div class="scene">
+      <div class="bubble"><small>Garçom</small>“Boa noite. Temos o prato do dia com arroz, purê e bife de fígado. Vai querer?”</div>
+      <div class="bubble me">Eu nem sentei ainda… e já me arrependi de estar aqui.</div>
+    </div>
+    <p>Esse é o atendimento que nasce sem rapport e <strong>morre na hora da venda</strong>. E ninguém confia em vendedor que já chega vendendo.</p>
+    <div class="definition">
+      <p class="hand">rapport (do francês <em>rapporter</em>)</p>
+      <p>Significa <em>“trazer de volta”</em> ou <em>“criar uma relação”</em>. É quando o cliente sente que você é confiável, autêntico e tá ali pra ajudar, não só pra vender.</p>
+    </div>
+    <p class="big">Cliente não compra de vendedor. Compra de <span>gente que entende ele.</span></p>
+  </section>
+
+  <section class="reveal">
+    <p class="eyebrow">Pra não confundir</p>
+    <h2>O que é e o que não é</h2>
+    <div class="versus">
+      <div class="yes"><b>Rapport é</b><ul><li>Sintonia natural</li><li>Clima leve, seguro e confortável</li><li>O cliente sentir que você é gente como ele</li></ul></div>
+      <div class="no"><b>Rapport não é</b><ul><li>Técnica de manipulação</li><li>Simpatia forçada</li><li>Chegar empurrando a promoção</li></ul></div>
+    </div>
+    <p>“Venda é consequência de um bom atendimento.” Então, antes de tentar fechar… <strong>conquiste</strong>.</p>
+  </section>
+
+  <section class="reveal">
+    <p class="eyebrow">Termômetro do rapport</p>
+    <h2>Como saber se você conquistou?</h2>
+    <p class="hint">Toque em cada sinal que você já viu acontecer no seu balcão.</p>
+    <div class="thermo">
+      <div class="tube" aria-hidden="true"><i id="tubeFill"></i></div>
+      <div class="signs" id="signs">
+        <button class="sign" aria-pressed="false"><span class="dot">✓</span>O cliente começa a rir com você</button>
+        <button class="sign" aria-pressed="false"><span class="dot">✓</span>Ele te chama pelo nome</button>
+        <button class="sign" aria-pressed="false"><span class="dot">✓</span>Conta da vida sem você ter perguntado</button>
+        <button class="sign" aria-pressed="false"><span class="dot">✓</span>Fica à vontade pra experimentar, perguntar e duvidar</button>
+        <p class="thermo-msg" id="thermoMsg" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <p class="eyebrow">Na prática, sem parecer falso</p>
+    <h2>Atendimento com alma</h2>
+    <div class="tabs" role="tablist" aria-label="Como construir rapport">
+      <button role="tab" aria-selected="true" aria-controls="p1" id="t1">1. Pergunte leve</button>
+      <button role="tab" aria-selected="false" aria-controls="p2" id="t2">2. Espelhe</button>
+      <button role="tab" aria-selected="false" aria-controls="p3" id="t3">3. Valide</button>
+    </div>
+    <div class="panel" role="tabpanel" id="p1" aria-labelledby="t1">
+      <p>Comece com perguntas leves e curiosas, que abrem conversa em vez de pedir CPF:</p>
+      <p class="say">“Tá procurando um visual mais discreto ou um que mude e te transforme mesmo?”</p>
+      <p class="say">“Você é do tipo que perde óculos ou cuida como se fosse um filho?”</p>
+      <p class="say">“Quer um modelo que combina com seu estilo… ou que revele uma nova versão sua?”</p>
+    </div>
+    <div class="panel" role="tabpanel" id="p2" aria-labelledby="t2" hidden>
+      <p>Espelhe o cliente <strong>sutilmente</strong>. Isso não é copiar. É sintonizar.</p>
+      <div class="pace">
+        <div><b>Fala devagar?</b>Abaixe o seu ritmo e dê tempo pra ele pensar.</div>
+        <div><b>É objetivo?</b>Vá direto ao ponto, sem rodeio.</div>
+      </div>
+    </div>
+    <div class="panel" role="tabpanel" id="p3" aria-labelledby="t3" hidden>
+      <p>Valide o que ele sente, antes de qualquer argumento:</p>
+      <p class="say">“Faz sentido você buscar conforto, principalmente se usa o dia todo.”</p>
+      <p class="say">“Eu também tenho dificuldade de escolher armação, a gente sempre quer levar três, né?”</p>
+    </div>
+    <div class="banner">Cliente compreendido relaxa. <span>E cliente relaxado compra.</span></div>
+  </section>
+
+  <section class="reveal">
+    <p class="eyebrow">Exemplos reais?! Ou não! Mas são exemplos</p>
+    <h2>Cada cliente, um ritmo</h2>
+    <p class="hint">Toque nos cards pra ver como a OH! atende cada um.</p>
+    <div class="flips" id="flips">
+      <button class="flip" aria-label="Cliente tímido"><span class="in">
+        <span class="f"><span class="emo" aria-hidden="true">🙈</span><b>Cliente tímido</b><small>Entra, fala baixo, olha pro chão.</small></span>
+        <span class="b"><strong>Nada de “JÁ VIU NOSSA PROMOÇÃO?”</strong><span class="say">“Se quiser só olhar com calma, fica à vontade. Mas se precisar de uma consultoria fashion, tô aqui.”</span></span></span></button>
+      <button class="flip" aria-label="Cliente que fala muito"><span class="in">
+        <span class="f"><span class="emo" aria-hidden="true">🗣️</span><b>Cliente que fala muito</b><small>Adora contar histórias.</small></span>
+        <span class="b"><strong>Você não corta. Ouve e devolve leve:</strong><span class="say">“Rapaz, com esse tanto de história, vamos escolher um óculos que aguente o tranco!”</span></span></span></button>
+      <button class="flip" aria-label="Cliente direto"><span class="in">
+        <span class="f"><span class="emo" aria-hidden="true">⚡</span><b>Cliente direto</b><small>Quer agilidade.</small></span>
+        <span class="b"><strong>Você acompanha:</strong><span class="say">“Show. Me diz o que você precisa que eu vou direto ao ponto.”</span></span></span></button>
+    </div>
+    <p class="lead">Rapport é respeitar o ritmo do cliente. E ajustar o seu.</p>
+  </section>
+
+  <!-- 2. Psicologia da comunicação -->
+  <section class="reveal">
+    <p class="eyebrow">Parte 2 · Psicologia da comunicação</p>
+    <h2>Escutar vende mais do que falar</h2>
+    <p>O cérebro adora ser ouvido. E quando o cliente fala, ele entrega as pistas do que realmente quer. Você só precisa… <strong>calar a boca e escutar</strong>.</p>
+    <p class="lead">Vendedor falador perde venda. Vendedor observador acerta em cheio.</p>
+    <div class="translator">
+      <div class="heard">“Uso o óculos até na academia.”</div>
+      <div class="channels" id="channels">
+        <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>As palavras</div>
+        <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h2M7 8v8M11 5v14M15 9v6M19 11v2"/></svg>O tom de voz</div>
+        <div><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 14.5c2 2 5 2 7 0M9 9.5h.01M15 9.5h.01"/></svg>As expressões</div>
+        <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11l3 3v13H5zM9 10h6M9 14h6"/></svg>As historinhas</div>
+      </div>
+      <button class="decode" id="decode">Traduzir o que ele disse</button>
+      <div class="decoded" id="decoded" aria-live="polite">
+        <div><b>Precisa de</b>conforto e durabilidade</div>
+        <div><b>É alguém que</b>busca uma vida saudável</div>
+        <div><b>E está</b>full time de óculos</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Linguagem corporal -->
+  <section class="reveal">
+    <p class="eyebrow">Parte 3 · Seu corpo fala</p>
+    <h2>Às vezes ele só tá dizendo “fuja de mim”</h2>
+    <p>Sabe aquele vendedor parado, braços cruzados, cara de segunda-feira sem café? Você nem lembra o rosto dele. E provavelmente não voltou mais lá. O cliente percebe. E o seu chefe também.</p>
+    <p class="quote">“O corpo mente menos que a boca. Se você diz uma coisa e seu corpo diz outra… o cliente acredita no corpo.”<small>Ricardo Ventura</small></p>
+  </section>
+
+  <section class="reveal">
+    <p class="eyebrow">Confiante ou só fingindo?</p>
+    <h2>A postura do vendedor OH!</h2>
+    <div class="toggle" role="group" aria-label="Ver postura">
+      <button aria-pressed="true" data-p="ok">Postura OH!</button>
+      <button aria-pressed="false" data-p="bad">Escorado no balcão</button>
+    </div>
+    <div class="posture">
+      <svg viewBox="0 0 140 200" role="img" aria-label="Boneco mostrando a postura do vendedor">
+        <rect x="0" y="186" width="140" height="6" rx="3" fill="var(--line)"/>
+        <g class="fig" id="fig" stroke="var(--green)" stroke-width="8" stroke-linecap="round" fill="none">
+          <circle cx="70" cy="34" r="18" fill="var(--paper)"/>
+          <path id="mouth" d="M62 38q8 7 16 0" stroke-width="3" stroke="var(--orange)"/>
+          <path d="M70 54v62"/>
+          <path id="armL" d="M70 70l-24 26"/>
+          <path id="armR" d="M70 70l24 26"/>
+          <path d="M70 116l-18 66M70 116l18 66"/>
+        </g>
+      </svg>
+      <ul id="postList">
+        <li>Coluna reta, sem virar um robozão</li>
+        <li>Ombros alinhados e relaxados</li>
+        <li>Mãos visíveis, nada de cruzadas ou no bolso</li>
+        <li>Olhar atento e um breve cumprimento pra quem te olhar</li>
+      </ul>
+    </div>
+    <p class="hint">Um pouco de “metido” tá liberado. Só não exagera.</p>
+  </section>
+
+  <section class="reveal">
+    <p class="eyebrow">O rosto é o outdoor das emoções</p>
+    <h2>Fale a verdade com a boca, com o corpo e com os gestos</h2>
+    <p>Quando o sorriso é verdadeiro, ele chega nos olhos. Treina isso no espelho. Sério. Agora veja a mesma pergunta do cliente: <strong>“Ficou legal?”</strong></p>
+    <div class="compare">
+      <div class="bad"><span class="tag">Zero confiança</span><p class="say">“Sim, combinou com você.”</p><small>Expressão travada, sem brilho no olhar.</small></div>
+      <div class="good"><span class="tag">Cliente acredita</span><p class="say">“Esse ficou incrível. Realçou seu olhar e ainda passa elegância.”</p><small>Olhos expressivos, sobrancelha levemente levantada, cabeça inclinada pro lado, sorrindo.</small></div>
+    </div>
+    <div class="gest">
+      <div><b>Gestos que ajudam</b><ul><li>Mãos abertas enquanto fala (transparência)</li><li>Mostrar com as mãos: “essa lente tem três zonas: perto, médio e longe”</li></ul></div>
+      <div class="minus"><b>Gestos que atrapalham</b><ul><li>Coçar a nuca, puxar a camisa, bater os dedos</li><li>Mãos no bolso ou braços cruzados o tempo todo</li><li>Gesticular feito político em campanha</li></ul></div>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <p class="eyebrow">Proxêmica: o espaço também fala</p>
+    <h2>Olhe pros pés do cliente</h2>
+    <p>Se você invade o espaço do cliente, ele recua. E cada recuo é um “não” silencioso. Chegue com leveza, sem colar. Se ele der um passo pra trás, respeite e ajuste.</p>
+    <div class="toggle" role="group" aria-label="Posição dos pés">
+      <button aria-pressed="true" data-f="in">Pés pra você</button>
+      <button aria-pressed="false" data-f="out">Pés pra saída</button>
+    </div>
+    <div class="feet">
+      <svg viewBox="0 0 260 150" role="img" aria-label="Vista de cima: vendedor, cliente e a porta da loja">
+        <rect x="200" y="20" width="50" height="110" rx="8" fill="none" stroke="var(--line)" stroke-width="3" stroke-dasharray="6 6"/>
+        <text x="225" y="80" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink-soft)" font-family="Nunito,sans-serif">porta</text>
+        <circle cx="40" cy="75" r="22" fill="var(--green)"/><text x="40" y="80" text-anchor="middle" font-size="12" font-weight="800" fill="var(--on-accent)" font-family="Nunito,sans-serif">você</text>
+        <circle cx="130" cy="75" r="22" fill="var(--orange)"/><text x="130" y="80" text-anchor="middle" font-size="11" font-weight="800" fill="var(--on-accent)" font-family="Nunito,sans-serif">cliente</text>
+        <g id="feetG">
+          <ellipse class="foot" cx="104" cy="62" rx="9" ry="5" fill="var(--terra)"/>
+          <ellipse class="foot" cx="104" cy="88" rx="9" ry="5" fill="var(--terra)"/>
+        </g>
+      </svg>
+      <p class="feet-msg" id="feetMsg" aria-live="polite">Pés e corpo apontados pra você: ele tá engajado. Siga a conversa.</p>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <p class="eyebrow">Presença</p>
+    <h2>Você não precisa falar alto. Só precisa estar ali</h2>
+    <p>Presença não é ser o mais falante. É ser o mais consciente do momento: não interromper, manter um olhar confortável e usar o silêncio como ferramenta.</p>
+    <div class="pause">
+      <p><b>Teste do silêncio de 2 segundos.</b> Explicou um benefício da lente? Em vez de continuar falando, espere.</p>
+      <div class="pause-line"><span>“…e ela protege seus olhos da tela o dia todo.”</span><div class="pause-bar" id="pauseBar"><i></i></div></div>
+      <p class="hint" id="pauseMsg">Esse silêncio deixa o cliente pensar e passa segurança.</p>
+      <button id="pauseBtn">Fazer a pausa</button>
+    </div>
+    <p>No fim, pergunte se ele entendeu e se coloque à disposição pra tirar todas as dúvidas, deixando claro que <strong>juntos</strong> vocês vão encontrar o melhor pra ele.</p>
+  </section>
+
+  <!-- 4. Cliente emocional -->
+  <section class="reveal">
+    <p class="eyebrow">Parte 4 · Psicologia das vendas</p>
+    <h2>O cliente é um ser emocional (que pensa que é racional)</h2>
+    <div class="emo-wrap">
+      <svg class="donut" viewBox="0 0 200 200" role="img" aria-label="90% das decisões de compra são emocionais">
+        <circle cx="100" cy="100" r="78" fill="none" stroke="var(--chip)" stroke-width="22"/>
+        <circle class="arc" id="arc" cx="100" cy="100" r="78" fill="none" stroke="var(--orange)" stroke-width="22" stroke-linecap="round" stroke-dasharray="490" stroke-dashoffset="490" transform="rotate(-90 100 100)"/>
+        <text x="100" y="104" text-anchor="middle" font-size="44" fill="var(--green)" id="pct">0%</text>
+        <text x="100" y="130" text-anchor="middle" font-size="13" fill="var(--ink-soft)">emoção</text>
+      </svg>
+      <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+        <p class="lead">90% das decisões de compra são emocionais.</p>
+        <p>Pessoas não compram produto. Compram emoção, identidade e solução pras suas dores. Seu trabalho é conectar armações a <strong>EMOÇÕES</strong>, não só a graus de lente.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <p class="eyebrow">“Leia” o cliente em 10 segundos</p>
+    <h2>Seja o espelho dele</h2>
+    <div class="read10">
+      <div><b>Tá de terno?</b><p class="say">“Essa armação diz ‘CEO’, mas sem ser chata igual reunião de segunda-feira.”</p></div>
+      <div><b>Estilo despojado?</b><p class="say">“Essa é pra quem curte um indie, café artesanal e fingir que trabalha em livraria.”</p></div>
+    </div>
+    <h3>Frases OH!-style</h3>
+    <div class="phrases">
+      <span>“Isso não é um óculos, é um acessório de autoestima”</span>
+      <span>“Seus olhos merecem esse mimo depois de tanta tela”</span>
+      <span>“Essa armação não vai só no seu rosto, vai no seu estilo de vida”</span>
+      <span>“Pode testar à vontade: o espelho aqui é juiz, não nós”</span>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <p class="eyebrow">Ética: psicologia do bem vende mais</p>
+    <h2>Regras de ouro OH!</h2>
+    <div class="rules">
+      <div><b>Nunca engane</b>Se a promoção é “só hoje”, ela termina hoje mesmo.</div>
+      <div><b>Empatia primeiro</b>Cliente indeciso? “Leva pra casa, pensa melhor e me diz. A gente não some!”</div>
+      <div><b>Venda a solução</b>Troque “Quer essa armação?” por “Qual problema seus óculos atuais te causam?”</div>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <p class="eyebrow">Resumão express</p>
+    <h2>Pra lembrar no balcão</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Ação</th><th>Efeito</th></tr></thead>
+      <tbody>
+        <tr><td>Escutar com atenção</td><td>Cria empatia e confiança</td></tr>
+        <tr><td>Perguntas leves e curiosas</td><td>Cria conexão emocional</td></tr>
+        <tr><td>Validar o que o cliente sente</td><td>Cria sintonia</td></tr>
+        <tr><td>Espelhar tom e ritmo</td><td>Gera segurança</td></tr>
+        <tr><td>Postura, rosto e gestos verdadeiros</td><td>O cliente acredita em você</td></tr>
+        <tr><td>Respeitar o espaço e usar pausas</td><td>Presença e equilíbrio</td></tr>
+        <tr><td>Ser gente, não robô</td><td>Faz o cliente lembrar de você</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <div class="motto reveal">
+    <p class="hand">Pra colar no espelho do provador</p>
+    <blockquote>“Rapport vale mais que mil argumentos. No final, todo mundo vai achar que vocês sempre foram amigos.”</blockquote>
+  </div>
+
+  <section class="pod" id="podcast" aria-labelledby="pod-title">
+    <p class="eyebrow" style="color:inherit;opacity:.8">Etapa 2</p>
+    <h2 id="pod-title">Podcast: Psicologia de atendimento na Cultura OH!</h2>
+    <p>Terminou a leitura? Agora dá o play. Dá pra ouvir no caminho pro trabalho, com fone, ou na pausa do café.</p>
+    <audio id="audio" preload="metadata" data-src="podcast-psicologia-atendimento.mp3"></audio>
+    <div class="player">
+      <button class="play" id="play" aria-label="Tocar podcast">
+        <svg id="ico" viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></svg>
+      </button>
+      <div class="track">
+        <label for="seek" class="eyebrow" style="color:inherit;opacity:.8;font-size:12px">Material 2 · Psicologia de atendimento</label>
+        <input id="seek" type="range" min="0" max="1171" step="1" value="0" aria-label="Posição do áudio">
+        <div class="times"><span id="cur">0:00</span><span id="dur">19:31</span></div>
+      </div>
+    </div>
+    <div class="speed">
+      <div class="skip">
+        <button id="back" aria-label="Voltar 15 segundos">−15s</button>
+        <button id="fwd" aria-label="Avançar 15 segundos">+15s</button>
+      </div>
+      <span style="margin-left:8px;font-weight:700">Velocidade</span>
+      <button data-rate="1" aria-pressed="true">1x</button>
+      <button data-rate="1.25" aria-pressed="false">1,25x</button>
+      <button data-rate="1.5" aria-pressed="false">1,5x</button>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Etapa 3</p>
+    <h2>Leve pro seu balcão</h2>
+    <ol class="reflect">
+      <li>Pense no último atendimento: em que momento você criou (ou perdeu) a sintonia com o cliente?<span>O que ele disse ou fez que mostrou isso?</span></li>
+      <li>Qual pergunta leve e curiosa você vai usar amanhã pra abrir a conversa?<span>Escreva do seu jeito, com a sua cara.</span></li>
+      <li>O que o seu corpo anda dizendo quando a loja está vazia?<span>Escolha uma coisa da postura OH! pra corrigir esta semana.</span></li>
+    </ol>
+    <div class="checks">
+      <label class="check"><input type="checkbox" id="c-ler" data-step="st-ler"><span>Li o material</span></label>
+      <label class="check"><input type="checkbox" id="c-ouvir" data-step="st-ouvir"><span>Ouvi o podcast até o fim</span></label>
+      <label class="check"><input type="checkbox" id="c-refletir" data-step="st-refletir"><span>Respondi as 3 perguntas</span></label>
+    </div>
+  </section>
+
+  <footer>
+    <div class="logo">+ OH!</div>
+    <p>Escola de Vendas OH! · Módulo 1: Cultura OH!, uma mentalidade de entender a venda em 360º</p>
+  </footer>
+</div>
+
+<script src="../ponte.js"></script>
+<script>
+(function(){
+  const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // seções aparecem ao rolar; o gráfico de 90% anima quando entra na tela
+  const io='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.remove('pre');if(e.target.contains($('#arc')))runDonut();io.unobserve(e.target)}}),{threshold:.15}):null;
+  $$('.reveal').forEach(el=>{if(io&&!reduce){el.classList.add('pre');io.observe(el)}});
+  let donutDone=false;
+  function runDonut(){if(donutDone)return;donutDone=true;$('#arc').style.strokeDashoffset=490*(1-.9);
+    const t0=performance.now();(function f(t){const k=Math.min(1,(t-t0)/1600);$('#pct').textContent=Math.round(90*(1-Math.pow(1-k,3)))+'%';if(k<1)requestAnimationFrame(f)})(t0)}
+  if(!io||reduce){runDonut()}
+
+  // termômetro do rapport
+  const msgs=['','Começou a esquentar…','Tá rolando sintonia!','Quase amigos de infância.','Rapport no talo! Agora sim, dá pra vender.'];
+  $$('.sign').forEach(b=>b.addEventListener('click',()=>{b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true');
+    const n=$$('.sign[aria-pressed="true"]').length;$('#tubeFill').style.height=(8+n*23)+'%';$('#thermoMsg').textContent=msgs[n]}));
+
+  // abas
+  $$('[role=tab]').forEach(t=>t.addEventListener('click',()=>{$$('[role=tab]').forEach(x=>{const on=x===t;x.setAttribute('aria-selected',on);$('#'+x.getAttribute('aria-controls')).hidden=!on})}));
+
+  // cards de cliente
+  $$('.flip').forEach(f=>f.addEventListener('click',()=>f.classList.toggle('on')));
+
+  // tradutor
+  $('#decode').addEventListener('click',()=>{const ch=$$('#channels div');ch.forEach(c=>c.classList.remove('lit'));$('#decoded').classList.remove('show');
+    ch.forEach((c,i)=>setTimeout(()=>c.classList.add('lit'),reduce?0:i*220));
+    setTimeout(()=>$('#decoded').classList.add('show'),reduce?0:ch.length*220+100)});
+
+  // postura
+  $$('[data-p]').forEach(b=>b.addEventListener('click',()=>{$$('[data-p]').forEach(x=>x.setAttribute('aria-pressed',x===b));const bad=b.dataset.p==='bad';
+    $('#fig').classList.toggle('slouch',bad);
+    $('#armL').setAttribute('d',bad?'M70 70l20 14 -6 8':'M70 70l-24 26');
+    $('#armR').setAttribute('d',bad?'M70 70l-20 14 6 8':'M70 70l24 26');
+    $('#mouth').setAttribute('d',bad?'M62 42q8 -5 16 0':'M62 38q8 7 16 0');
+    $('#postList').style.opacity=bad?.45:1}));
+
+  // pés
+  $$('[data-f]').forEach(b=>b.addEventListener('click',()=>{$$('[data-f]').forEach(x=>x.setAttribute('aria-pressed',x===b));const out=b.dataset.f==='out';
+    $$('.foot').forEach((f,i)=>f.setAttribute('transform',out?`translate(${i?52:52} 0)`:''));
+    $('#feetMsg').textContent=out?'Pés e corpo virados pra saída: ele quer ir embora. Resuma, ofereça ajuda e deixe a porta aberta pra ele voltar.':'Pés e corpo apontados pra você: ele tá engajado. Siga a conversa.'}));
+
+  // silêncio de 2 segundos
+  $('#pauseBtn').addEventListener('click',()=>{const bar=$('#pauseBar');bar.classList.remove('run');void bar.offsetWidth;bar.classList.add('run');
+    $('#pauseMsg').textContent='Shhh… deixa a mensagem respirar.';setTimeout(()=>$('#pauseMsg').textContent='Pronto. Agora sim: “Ficou alguma dúvida? Vamos juntos achar o melhor pra você.”',2000)});
+
+  // player
+  const a=$('#audio'),play=$('#play'),ico=$('#ico'),seek=$('#seek'),cur=$('#cur'),dur=$('#dur');
+  const fmt=s=>{s=Math.max(0,Math.floor(s||0));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
+  const PLAY='M7 4.5v15l13-7.5z',PAUSE='M6 4h4v16H6zM14 4h4v16h-4z';
+  const KEY=(window.OHPFX||'')+'oh-m1-mat2';
+  let st={};try{st=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+  const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
+  a.addEventListener('loadedmetadata',()=>{seek.max=Math.floor(a.duration);dur.textContent=fmt(a.duration);if(st.t&&st.t<a.duration-5)a.currentTime=st.t});
+  let last=0;
+  a.addEventListener('timeupdate',()=>{seek.value=Math.floor(a.currentTime);cur.textContent=fmt(a.currentTime);
+    if(Math.abs(a.currentTime-last)>5){last=a.currentTime;st.t=a.currentTime;save()}});
+  a.addEventListener('play',()=>{ico.firstElementChild.setAttribute('d',PAUSE);play.setAttribute('aria-label','Pausar podcast')});
+  a.addEventListener('pause',()=>{ico.firstElementChild.setAttribute('d',PLAY);play.setAttribute('aria-label','Tocar podcast')});
+  a.addEventListener('ended',()=>{st.t=0;setCheck('c-ouvir',true)});
+  play.addEventListener('click',()=>{a.paused?a.play().catch(()=>{}):a.pause()});
+  seek.addEventListener('input',()=>{a.currentTime=+seek.value});
+  $('#back').addEventListener('click',()=>{a.currentTime=Math.max(0,a.currentTime-15)});
+  $('#fwd').addEventListener('click',()=>{a.currentTime=Math.min(a.duration||1e9,a.currentTime+15)});
+  $$('[data-rate]').forEach(b=>b.addEventListener('click',()=>{a.playbackRate=+b.dataset.rate;$$('[data-rate]').forEach(x=>x.setAttribute('aria-pressed',x===b))}));
+
+  // progresso pessoal
+  st.c=st.c||{};
+  function setCheck(id,v){const el=document.getElementById(id);el.checked=v;st.c[id]=v;save();document.getElementById(el.dataset.step).classList.toggle('done',v)}
+  $$('.check input').forEach(el=>{if(st.c[el.id])setCheck(el.id,true);el.addEventListener('change',()=>setCheck(el.id,el.checked))});
+})();
+</script>
+</body></html>

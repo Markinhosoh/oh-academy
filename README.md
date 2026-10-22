@@ -4,7 +4,7 @@ Portal de estudos da **Escola de Vendas OH! Ótica**: trilha gamificada em 8 mó
 
 ## Situação
 
-Fase 2: login individual, progresso, desbloqueio e XP salvos no Supabase (plano grátis). O painel Admin mostra os dados reais da equipe: tempo em cada passo, cliques nos visuais, quanto do podcast foi ouvido e notas do quiz. O Módulo 1 é o único montado; Biblioteca e Extras ainda usam a lista fixa.
+Login individual, progresso, desbloqueio e XP salvos no Supabase (plano grátis). Os 8 módulos têm materiais (19 no total), todos no formato do "Propósito no Balcão": leia, ouça o podcast ou treine no balcão, reflita. Cada material libera depois do anterior e vale 50 XP; concluir todos os materiais de um módulo dá +100 XP, a medalha e libera o próximo módulo. O painel Admin mostra, material por material, tempo, cliques nos visuais e quanto do podcast foi ouvido.
 
 Próximas fases:
 
@@ -21,11 +21,17 @@ Site estático no GitHub Pages: Settings → Pages → Deploy from a branch → 
 - `supabase/schema.sql`: cria tabelas, regras de acesso e a pasta privada `materiais`. Rode no SQL Editor do Supabase.
 - Login: cada pessoa é cadastrada em Authentication → Users como `usuario@ohacademy.app`; no portal digita só `usuario`.
 - Admin: `update public.perfis set papel = 'admin' where ...` (ver o guia).
-- Podcast do Módulo 1: enviar `podcast-cultura-oh.mp3` para Storage → `materiais/m1/`. Sem ele, o player usa uma reprodução simulada.
+- Podcasts: ficam na pasta privada Storage → `materiais`, com o mesmo nome usado na página do material:
+  - `m1/podcast-cultura-oh.mp3`, `m1/podcast-psicologia-atendimento.mp3`, `m1/podcast-autoimagem-vendedor.mp3`
+  - `m3/spin-selling.mp3`
+  - `m4/poder-da-autoimagem.mp3`
+
+  Enquanto um MP3 não estiver lá, o material avisa que o áudio ainda está chegando.
 
 ## Arquivos
 
 - `index.html`: o portal (HTML, CSS e JS num arquivo só). Visual escuro no estilo do app de metas da OH!: destaque grande no topo, fileiras de capas estilo Netflix e barra de abas embaixo.
+- `materiais/mN/material-K.html`: as páginas dos materiais. O portal abre cada uma em tela cheia; `materiais/ponte.js` liga a página ao portal (progresso por pessoa, XP, podcast do Supabase e registro de uso). A lista dos materiais fica em `MATS`, no `index.html`.
 - `assets/`: imagens usadas nas capas.
 - `supabase/schema.sql`: estrutura do banco.
 - `manifest.webmanifest` e `icons/`: permitem instalar o portal no celular como app.
