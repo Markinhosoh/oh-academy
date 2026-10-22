@@ -25,6 +25,7 @@ Site estático no GitHub Pages: Settings → Pages → Deploy from a branch → 
 
 ## Arquivos
 
-- `index.html`: o portal (HTML, CSS e JS num arquivo só).
+- `index.html`: o portal (HTML, CSS e JS num arquivo só). Visual escuro no estilo do app de metas da OH!: destaque grande no topo, fileiras de capas estilo Netflix e barra de abas embaixo.
+- `assets/`: imagens usadas nas capas.
 - `supabase/schema.sql`: estrutura do banco.
 - `manifest.webmanifest` e `icons/`: permitem instalar o portal no celular como app.
