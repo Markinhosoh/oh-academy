@@ -366,7 +366,7 @@ footer .logo{font-size:28px}
     <p class="subtitle">Consultoria de estilo do jeito OH!: propósito, personalidade e autenticidade, não só regra estética.</p>
     <ol class="steps" aria-label="Como fazer este material">
       <li id="st-ler"><b>1</b><span>Leia</span><small>uns 8 minutos</small></li>
-      <li id="st-treino"><b>2</b><span>Treine</span><small>situações de balcão</small></li>
+      <li id="st-ouvir"><b>2</b><span>Ouça o podcast</span><small>cerca de 14 minutos</small></li>
       <li id="st-refletir"><b>3</b><span>Reflita</span><small>3 perguntas pro seu balcão</small></li>
     </ol>
   </header>
@@ -441,19 +441,37 @@ footer .logo{font-size:28px}
     <blockquote>“Seus óculos não corrigem só a visão… corrigem a autoestima!”</blockquote>
   </div>
   <section id="treino" aria-labelledby="tr-title">
-    <p class="eyebrow">Etapa 2</p>
+    <p class="eyebrow">Pratique</p>
     <h2 id="tr-title">Treine no balcão</h2>
-    <p class="treino-note">Escolha o jeito OH! em cada situação. Acertando todas, a etapa fica concluída.</p>
+    <p class="treino-note">Escolha o jeito OH! em cada situação.</p>
     <div class="owner"><div class="sit"><p>A cliente diz: “acho que meu rosto é redondo, então…”</p><div class="opts"><button>“Então só pode quadrado”</button><button data-ok="Isso! Formato de vida antes do formato do rosto.">“Me conta do seu dia a dia e de como você quer ser vista”</button></div><p class="fb" aria-live="polite"></p></div><div class="sit"><p>O cliente experimentou uma armação colorida e riu de nervoso.</p><div class="opts"><button data-ok="Isso! Empoderamento, não julgamento.">“Ficou com cara de quem manda no próprio espelho!”</button><button>“É, talvez não seja pra você”</button></div><p class="fb" aria-live="polite"></p></div><div class="sit"><p>Representante comercial, 10 visitas por dia, quer passar confiança.</p><div class="opts"><button>Uma armação frágil e minimalista</button><button data-ok="Isso! Rotina + aspiração + valor.">Acetato marcante e resistente + lente que não reflete</button></div><p class="fb" aria-live="polite"></p></div></div>
   </section>
-  
+  <section class="pod" id="podcast" aria-labelledby="pod-title">
+    <p class="eyebrow" style="color:inherit;opacity:.8">Etapa 2</p>
+    <h2 id="pod-title">Podcast: Óculos que combinam com a sua vida</h2>
+    <p>Terminou a leitura? Agora dá o play. Dá pra ouvir no caminho pro trabalho, com fone, ou na pausa do café.</p>
+    <audio id="audio" preload="metadata" data-src="podcast-formato-de-vida.mp3"></audio>
+    <div class="player">
+      <button class="play" id="play" aria-label="Tocar podcast"><svg id="ico" viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></svg></button>
+      <div class="track">
+        <label for="seek" class="eyebrow" style="color:inherit;opacity:.8;font-size:12px">Óculos que combinam com a sua vida</label>
+        <input id="seek" type="range" min="0" max="829" step="1" value="0" aria-label="Posição do áudio">
+        <div class="times"><span id="cur">0:00</span><span id="dur">13:49</span></div>
+      </div>
+    </div>
+    <div class="speed">
+      <div class="skip"><button id="back" aria-label="Voltar 15 segundos">−15s</button><button id="fwd" aria-label="Avançar 15 segundos">+15s</button></div>
+      <span style="margin-left:8px;font-weight:700">Velocidade</span>
+      <button data-rate="1" aria-pressed="true">1x</button><button data-rate="1.25" aria-pressed="false">1,25x</button><button data-rate="1.5" aria-pressed="false">1,5x</button>
+    </div>
+  </section>
   <section>
     <p class="eyebrow">Etapa 3</p>
     <h2>Leve pro seu balcão</h2>
     <ol class="reflect"><li>Pense no seu último cliente: qual era o formato de vida dele?<span>Rotina, aspiração e valores.</span></li><li>Qual frase você costuma dizer que está na lista do NUNCA?<span>Reescreva do jeito OH!.</span></li><li>Qual a armação mais diferente da loja?<span>Ofereça pra experimentar pelo menos uma vez esta semana.</span></li></ol>
     <div class="checks">
       <label class="check"><input type="checkbox" id="c-ler" data-step="st-ler"><span>Li o material</span></label>
-      <label class="check"><input type="checkbox" id="c-treino" data-step="st-treino"><span>Acertei as situações do treino</span></label>
+      <label class="check"><input type="checkbox" id="c-ouvir" data-step="st-ouvir"><span>Ouvi o podcast até o fim</span></label>
       <label class="check"><input type="checkbox" id="c-refletir" data-step="st-refletir"><span>Respondi as 3 perguntas</span></label>
     </div>
   </section>

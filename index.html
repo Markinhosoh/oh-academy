@@ -355,6 +355,7 @@ th{color:var(--muted);font-weight:600;font-size:12px}
 @keyframes glow{50%{box-shadow:0 0 0 2px var(--orange),0 0 22px -2px color-mix(in srgb,var(--orange) 70%,transparent)}}
 .link{display:flex;gap:14px;align-items:stretch;background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);padding:14px;text-decoration:none;color:inherit;transition:transform .2s}
 .link:hover{transform:translateY(-2px)}
+.link .cov.book{width:64px;min-height:88px;aspect-ratio:3/4;box-shadow:0 6px 14px -6px rgba(0,0,0,.8)}
 .link .cov{flex:none;width:76px;min-height:76px;border-radius:12px;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:13px;color:#fff;text-align:center;padding:6px;line-height:1.1}
 .link .tx{min-width:0;display:grid;gap:3px;align-content:center}
 .link .tx b{font-family:var(--display);font-size:16px;line-height:1.2}
@@ -588,13 +589,13 @@ th,td{border-bottom-color:#3a3a3a}
   <section class="page-head">
     <div class="eyebrow">Extras OH!</div>
     <h1>Pra ir além</h1>
-    <p>Notícias do setor, vídeos, sites e leituras que o time OH! separou pra você. Tudo que chega novo ganha destaque.</p>
+    <p>Resenhas do Clube de Leitura OH!, notícias do setor, vídeos e leituras que o time OH! separou pra você. Tudo que chega novo ganha destaque.</p>
   </section>
   <div class="filters" id="extFilters" role="group" aria-label="Filtrar por categoria">
-    <button data-f="all" aria-pressed="true">Tudo</button><button data-f="Vídeo" aria-pressed="false">Vídeos</button><button data-f="Leitura" aria-pressed="false">Leituras</button><button data-f="Notícia" aria-pressed="false">Notícias</button><button data-f="Dica" aria-pressed="false">Dicas</button>
+    <button data-f="all" aria-pressed="true">Tudo</button><button data-f="Resenha" aria-pressed="false">Resenhas</button><button data-f="Vídeo" aria-pressed="false">Vídeos</button><button data-f="Leitura" aria-pressed="false">Leituras</button><button data-f="Notícia" aria-pressed="false">Notícias</button><button data-f="Dica" aria-pressed="false">Dicas</button>
   </div>
   <div id="extList" class="ext"></div>
-  <p class="demo-note">Links de exemplo. No portal, o admin cadastra os links e marca o que é novo.</p>
+  <p class="demo-note">As resenhas abrem em PDF numa nova aba.</p>
 </main>
 
 <main class="wrap" id="admin" hidden>
@@ -667,7 +668,7 @@ const MATS={
  1:[{t:"Propósito no balcão",d:"Nossa filosofia de atendimento: a felicidade e o encantamento do cliente, em cada detalhe da venda.",s:"Leitura 5 min · Podcast 20 min",au:true},{t:"Gente vende pra gente",d:"A psicologia do atendimento OH!: rapport, escuta e linguagem corporal pra conquistar antes de vender.",s:"Leitura 8 min · Podcast 20 min",au:true},{t:"O espelho do vendedor",d:"Autoimagem na Cultura OH!: como você se enxerga muda o jeito que você atende, e o jeito que o cliente se enxerga.",s:"Leitura 8 min · Podcast 21 min",au:true}],
  2:[{t:"O corpo vende antes da boca",d:"Postura, rosto, gestos, espaço e presença: tudo que você comunica sem dizer uma palavra.",s:"Leitura 8 min · Podcast 27 min",au:true},{t:"Os primeiros 30 segundos",d:"O palco pronto, a chegada certa pra cada cliente e a alegria que faz a pessoa querer ficar.",s:"Leitura 6 min · Treino de balcão",au:false}],
  3:[{t:"Deixe o cliente falar",d:"As perguntas que descobrem a dor, o desejo e o bolso do cliente, sem parecer interrogatório.",s:"Leitura 7 min · Treino de balcão",au:false},{t:"SPIN Selling OH!",d:"Situação, Problema, Implicação e Necessidade: o GPS pra descobrir o que o cliente precisa e fazer ele mesmo enxergar a solução.",s:"Leitura 9 min · Podcast 15 min",au:true}],
- 4:[{t:"Do formato do rosto ao formato de vida",d:"Consultoria de estilo do jeito OH!: propósito, personalidade e autenticidade, não só regra estética.",s:"Leitura 8 min · Treino de balcão",au:false},{t:"A cor da alma",d:"Cores que viram declaração de personalidade, e perfis pra você enxergar o estilo de cada cliente.",s:"Leitura 7 min · Treino de balcão",au:false},{t:"Por dentro do produto",d:"Como nascem nossas armações artesanais de acetato e por que as lentes free form mudaram o jogo.",s:"Leitura 6 min · Treino de balcão",au:false}],
+ 4:[{t:"Do formato do rosto ao formato de vida",d:"Consultoria de estilo do jeito OH!: propósito, personalidade e autenticidade, não só regra estética.",s:"Leitura 8 min · Podcast 14 min",au:true},{t:"A cor da alma",d:"Cores que viram declaração de personalidade, e perfis pra você enxergar o estilo de cada cliente.",s:"Leitura 7 min · Treino de balcão",au:false},{t:"Por dentro do produto",d:"Como nascem nossas armações artesanais de acetato e por que as lentes free form mudaram o jogo.",s:"Leitura 6 min · Treino de balcão",au:false}],
  5:[{t:"Ofertas irresistíveis",d:"Como transformar o que o cliente te contou numa oferta tão boa que dá vergonha dizer não.",s:"Leitura 7 min · Treino de balcão",au:false},{t:"Truques legais do cérebro",d:"Âncora, efeito isca, escassez, porquê e outros gatilhos mentais, sempre com a ética da OH!.",s:"Leitura 8 min · Treino de balcão",au:false}],
  6:[{t:"Persuasão estilo FBI",d:"Espelhamento, rotulagem, escuta tática e linguagem positiva: influência com empatia e precisão.",s:"Leitura 8 min · Treino de balcão",au:false},{t:"Método EVA",d:"Os 4 tipos de objeção e como contornar cada um: Escutar, Validar e Apresentar valor.",s:"Leitura 9 min · Treino de balcão",au:false}],
  7:[{t:"Fechamento com charme",d:"O sim leve e natural: confiança, clareza e as 3 atitudes que fazem o cliente escolher sem se sentir empurrado.",s:"Leitura 7 min · Treino de balcão",au:false},{t:"O sim natural",d:"Afirmativa assumida, alternativa limitada e o resumo que transforma “gostei” em “vou levar”.",s:"Leitura 5 min · Treino de balcão",au:false}],
@@ -747,7 +748,7 @@ const FX={
 const art=n=>`<div class="art a${n}"><svg class="fx" viewBox="0 0 110 62" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">${FX[n]||""}</svg></div>`;
 const photo='<div class="art photo"></div>';
 const cap=t=>t[0].toUpperCase()+t.slice(1);
-const KINDS={aula:"AULA",audio:"ÁUDIO",pdf:"PDF",resumo:"RESUMO",extra:"LINK"};
+const KINDS={aula:"AULA",audio:"ÁUDIO",pdf:"PDF",resumo:"RESUMO",extra:"LINK",resenha:"LIVRO"};
 let FIRST="",homeF="all",slide=0,slideT=null;
 
 function nextModule(){return MODS.find(m=>stateOf(m.n)==="open")||null}
@@ -785,8 +786,8 @@ $("#dots").addEventListener("click",e=>{const b=e.target.closest("button");if(b)
 function tile(o){
  const tag=o.href?"a":"button";
  return `<${tag} class="tile${o.lock?" locked":""}" ${o.href?`href="${o.href}" target="_blank" rel="noopener"`:'type="button"'} data-k="${o.k}" data-id="${o.id||""}" aria-label="${esc(o.b)}${o.lock?" (bloqueado)":""}">
-  <span class="cv">${o.photo?photo:art(o.a)}${o.nw?'<span class="badge-new">Novo</span>':""}<span class="kind">${o.lock?"🔒":KINDS[o.kind]||""}</span>
-   <span class="ttl"><small>${o.eb}</small>${o.t}</span>${o.lock?"":`<span class="playhint"><span>${ICON.play}</span></span>`}
+  <span class="cv">${o.img?`<div class="art" style="background-image:url(${o.img});background-position:center 20%"></div>`:o.photo?photo:art(o.a)}${o.nw?'<span class="badge-new">Novo</span>':""}<span class="kind">${o.lock?"🔒":KINDS[o.kind]||""}</span>
+   ${o.img?"":`<span class="ttl"><small>${o.eb}</small>${o.t}</span>`}${o.lock?"":`<span class="playhint"><span>${ICON.play}</span></span>`}
    ${o.p!=null?`<span class="pb"><i style="width:${o.p}%"></i></span>`:""}</span>
   <span class="info"><b>${o.b}</b><span>${o.s}</span></span></${tag}>`}
 function poster(m){const st=stateOf(m.n);const p=modPct(m.n);
@@ -826,13 +827,13 @@ function renderTrail(){
  const novos=[];MODS.forEach(m=>MATS[m.n].forEach((_,i)=>{if(ehNovo(m.n,i+1))novos.push(mt(m.n,i+1))}));
  const extNovos=EXT.filter(e=>e.nw&&!S.seen.includes(e.id));
  if(novos.length||extNovos.length)R.push(["novidades","Chegou agora","Tudo que é novo ganha o selo","all",
-  novos.join("")+extNovos.map((e,i)=>tile({k:"ext",id:e.id,kind:"extra",href:e.u||"",a:[3,6,5,8][i%4],nw:true,eb:e.c,t:e.t,b:e.t,s:e.s})).join("")]);
+  novos.join("")+extNovos.map((e,i)=>tile({k:"ext",id:e.id,kind:e.img?"resenha":"extra",img:e.img,href:e.u||"",a:[3,6,5,8][i%4],nw:true,eb:e.c,t:e.t,b:e.t,s:e.s})).join("")]);
  R.push(["podcasts","Podcasts pro caminho","Ouça no ônibus, no carro ou antes de abrir a loja","audio",
   MODS.flatMap(m=>MATS[m.n].map((x,i)=>x.au?mt(m.n,i+1,{eb:`Podcast · Módulo ${m.n}`}):"")).join("")]);
  R.push(["apostilas","Todos os materiais","Leitura, podcast e treino de balcão, um depois do outro","pdf",
   MODS.flatMap(m=>MATS[m.n].map((_,i)=>mt(m.n,i+1))).join("")]);
- R.push(["extras-row","Pra ir além","Vídeos, notícias e leituras que o time OH! separou","extra",
-  EXT.map((e,i)=>tile({k:"ext",id:e.id,kind:"extra",href:e.u||"",a:[3,6,5,8,7,4][i%6],nw:e.nw&&!S.seen.includes(e.id),eb:e.c,t:e.t,b:e.t,s:e.s})).join("")]);
+ R.push(["extras-row","Pra ir além","Resenhas de livros, vídeos e notícias que o time OH! separou","extra",
+  EXT.map((e,i)=>tile({k:"ext",id:e.id,kind:e.img?"resenha":"extra",img:e.img,href:e.u||"",a:[3,6,5,8,7,4][i%6],nw:e.nw&&!S.seen.includes(e.id),eb:e.c,t:e.t,b:e.t,s:e.s})).join("")]);
 
  $("#rows").innerHTML=R.map(([id,h,tag,f,inner])=>`<section class="row" id="row-${id}" data-f="${f}" aria-label="${h}">
   <div class="row-h gut"><h2>${h}</h2>${tag?`<span class="tag">${tag}</span>`:""}</div>
@@ -958,17 +959,21 @@ function renderLib(){const L=$("#libList");L.innerHTML="";
 
 /* ---------- Extras ---------- */
 const EXT=[
- {id:"E1",c:"Vídeo",t:"SPIN Selling na prática",s:"Vídeos no YouTube sobre o método de Neil Rackham",u:"https://www.youtube.com/results?search_query=spin+selling+neil+rackham",cov:"var(--terra)",lab:"▶ YouTube",nw:true},
+ {id:"R1",c:"Resenha",t:"SPIN Selling",s:"Neil Rackham · quem faz as perguntas certas não precisa empurrar (Módulo 3)",u:"extras/resenhas/spin-selling.pdf",img:"extras/resenhas/spin-selling.webp",lab:"Resenha",nw:true},
+ {id:"R2",c:"Resenha",t:"Como Fazer Amigos e Influenciar Pessoas",s:"Dale Carnegie · o clássico da conexão com o cliente",u:"extras/resenhas/como-fazer-amigos.pdf",img:"extras/resenhas/como-fazer-amigos.webp",lab:"Resenha",nw:true},
+ {id:"R3",c:"Resenha",t:"Ofertas de US$ 100 Milhões",s:"Alex Hormozi · ofertas que o cliente não consegue recusar (Módulo 5)",u:"extras/resenhas/ofertas-100-milhoes.pdf",img:"extras/resenhas/ofertas-100-milhoes.webp",lab:"Resenha",nw:true},
+ {id:"R4",c:"Resenha",t:"Negocie Como se Sua Vida Dependesse Disso",s:"Chris Voss · as técnicas FBI do Módulo 6",u:"extras/resenhas/negocie-como-se-sua-vida-dependesse-disso.pdf",img:"extras/resenhas/negocie-como-se-sua-vida-dependesse-disso.webp",lab:"Resenha",nw:true},
+ {id:"R5",c:"Resenha",t:"O Jeito Disney de Encantar os Clientes",s:"Disney Institute · a base do Método HEARD do Módulo 8",u:"extras/resenhas/o-jeito-disney.pdf",img:"extras/resenhas/o-jeito-disney.webp",lab:"Resenha",nw:true},
+ {id:"E1",c:"Vídeo",t:"SPIN Selling na prática",s:"Vídeos no YouTube sobre o método de Neil Rackham",u:"https://www.youtube.com/results?search_query=spin+selling+neil+rackham",cov:"var(--terra)",lab:"▶ YouTube"},
  {id:"E2",c:"Notícia",t:"Mercado óptico em pauta",s:"Últimas notícias do setor óptico no Google Notícias",u:"https://news.google.com/search?q=mercado%20%C3%B3ptico&hl=pt-BR&gl=BR&ceid=BR:pt-419",cov:"var(--green)",lab:"Notícias",nw:true},
- {id:"E3",c:"Leitura",t:"Negocie como se sua vida dependesse disso",s:"Chris Voss, base das técnicas FBI do Módulo 6",u:"https://www.google.com/search?q=Negocie+como+se+sua+vida+dependesse+disso+Chris+Voss",cov:"var(--orange)",lab:"Livro"},
  {id:"E4",c:"Vídeo",t:"Alex Hormozi e as ofertas irresistíveis",s:"Vídeos legendados sobre $100M Offers",u:"https://www.youtube.com/results?search_query=alex+hormozi+ofertas+legendado",cov:"var(--terra)",lab:"▶ YouTube"},
- {id:"E5",c:"Dica",t:"Rapidinha: deixe o cliente FALAR",s:"5 perguntas pra usar amanhã no balcão",u:"",cov:"var(--nude)",lab:"Dica OH!"},
- {id:"E6",c:"Leitura",t:"O jeito Disney de encantar clientes",s:"Livro de apoio ao Método HEARD, Módulo 8",u:"https://www.google.com/search?q=O+jeito+Disney+de+encantar+os+clientes+livro",cov:"var(--orange)",lab:"Livro"}];
+ {id:"E5",c:"Dica",t:"Rapidinha: deixe o cliente FALAR",s:"5 perguntas pra usar amanhã no balcão",u:"",cov:"var(--nude)",lab:"Dica OH!"}
+];
 function extNewIds(){return EXT.filter(e=>e.nw&&!S.seen.includes(e.id)).map(e=>e.id)}
 function renderExt(){const L=$("#extList");L.innerHTML="";
  EXT.filter(e=>extF==="all"||e.c===extF).sort((a,b)=>(b.nw&&!S.seen.includes(b.id))-(a.nw&&!S.seen.includes(a.id))).forEach(e=>{const nw=e.nw&&!S.seen.includes(e.id);
   const el=document.createElement(e.u?"a":"button");el.className="link"+(nw?" is-new":"");if(e.u){el.href=e.u;el.target="_blank";el.rel="noopener"}else{el.style.border="0";el.style.textAlign="left";el.style.width="100%"}
-  el.innerHTML=`<span class="cov" style="background:${e.cov}">${e.lab}</span><span class="tx"><span class="cat">${e.c}${nw?'<span class="new">Novo</span>':""}</span><b>${e.t}</b><small>${e.s}</small></span>`;
+  el.innerHTML=`<span class="cov${e.img?" book":""}" style="background:${e.img?`#222 url(${e.img}) center top/cover`:e.cov}">${e.img?"":e.lab}</span><span class="tx"><span class="cat">${e.c}${nw?'<span class="new">Novo</span>':""}</span><b>${e.t}</b><small>${e.s}</small></span>`;
   el.addEventListener("click",()=>{markSeen(e.id);registrar("link_extra",{material:e.id,dados:{titulo:e.t}});if(!e.u)toast("Pergunte ao cliente: o que você NÃO gosta no seu óculos atual?");setTimeout(renderExt,300)});L.appendChild(el)})}
 
 function markSeen(id){if(!S.seen.includes(id)){S.seen.push(id);save();renderDots()}}

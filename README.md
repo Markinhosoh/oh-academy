@@ -23,8 +23,8 @@ Site estático no GitHub Pages: Settings → Pages → Deploy from a branch → 
 - Admin: `update public.perfis set papel = 'admin' where ...` (ver o guia).
 - Podcasts: ficam na pasta privada Storage → `materiais`, com o mesmo nome usado na página do material:
   - `m1/podcast-cultura-oh.mp3`, `m1/podcast-psicologia-atendimento.mp3`, `m1/podcast-autoimagem-vendedor.mp3`
-  - `m2/podcast-corpo-vende.mp3`, `m3/podcast-investigando-necessidades.mp3`
-  - Os módulos 4 a 8 ainda não têm podcast; os materiais deles usam o treino de balcão na etapa 2.
+  - `m2/podcast-corpo-vende.mp3`, `m3/podcast-investigando-necessidades.mp3`, `m4/podcast-formato-de-vida.mp3`
+  - Os módulos 5 a 8 ainda não têm podcast; os materiais deles usam o treino de balcão na etapa 2.
 
   Enquanto um MP3 não estiver lá, o material avisa que o áudio ainda está chegando.
 
@@ -32,6 +32,7 @@ Site estático no GitHub Pages: Settings → Pages → Deploy from a branch → 
 
 - `index.html`: o portal (HTML, CSS e JS num arquivo só). Visual escuro no estilo do app de metas da OH!: destaque grande no topo, fileiras de capas estilo Netflix e barra de abas embaixo.
 - `materiais/mN/material-K.html`: as páginas dos materiais. O portal abre cada uma em tela cheia; `materiais/ponte.js` liga a página ao portal (progresso por pessoa, XP, podcast do Supabase e registro de uso). A lista dos materiais fica em `MATS`, no `index.html`.
+- `extras/resenhas/`: resenhas do Clube de Leitura OH! (PDF + capa em webp), listadas em `EXT` na aba Extras.
 - `assets/`: imagens usadas nas capas.
 - `supabase/schema.sql`: estrutura do banco.
 - `manifest.webmanifest` e `icons/`: permitem instalar o portal no celular como app.
