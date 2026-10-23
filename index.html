@@ -316,6 +316,25 @@ th,td{padding:7px 6px;text-align:left;border-bottom:1px solid var(--line);white-
 th{color:var(--muted);font-weight:600;font-size:12px}
 .chip{display:inline-block;padding:1px 8px;border-radius:99px;font-size:12px;font-weight:600}
 .chip.y{background:var(--ok-soft);color:var(--ok)} .chip.n{background:var(--surface-2);color:var(--muted)}
+/* acessos da equipe (cadastro de vendedores) */
+.acc{margin-top:22px;display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+.acc-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.acc-head h2{font-family:var(--display);font-size:20px;margin:0;flex:1}
+.acc .btn{padding:10px 16px;font-size:14px}
+.acc-box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;grid-template-columns:minmax(0,1fr);gap:10px;animation:rise .3s ease}
+.acc-box[hidden]{display:none}
+.acc-box p{margin:0;color:var(--muted);font-size:14px}
+.acc textarea,.acc input{font:inherit;font-size:15px;color:var(--ink);background:#000;border:2px solid #3a3a3a;border-radius:8px;padding:10px 12px;width:100%;transition:border-color .2s,box-shadow .2s}
+.acc textarea{min-height:130px;resize:vertical}
+.acc textarea:focus,.acc input:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 4px var(--orange-soft)}
+.acc table input{padding:6px 8px;font-size:14px;min-width:120px}
+.acc td.st{white-space:normal;min-width:120px}
+.acc .ok{color:var(--green-l);font-weight:700}.acc .bad{color:var(--bad);font-weight:700}
+.acc .row-btns{display:flex;gap:8px;flex-wrap:wrap}
+.acc .mini-btn{border:1px solid #3a3a3a;background:#2a2a2a;color:#fff;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:700}
+.acc .mini-btn:hover{background:#3a3a3a}
+.acc tr.off td{color:var(--muted)}
+.acc tr.off td:first-child b{text-decoration:line-through}
 
 /* logo, dock, páginas novas */
 .logo{align-items:center;gap:8px;font-size:20px}
@@ -600,6 +619,16 @@ th,td{border-bottom-color:#3a3a3a}
     <div class="kpi"><b id="kpiWeek">–</b><small>estudo nos últimos 7 dias</small></div>
   </div>
   <div class="people" id="people"></div>
+  <section class="acc" aria-labelledby="accTitle">
+    <div class="acc-head"><h2 id="accTitle">Acessos da equipe</h2><button class="btn play" id="accNovo" type="button">+ Cadastrar vendedores</button></div>
+    <div class="acc-box" id="accForm" hidden>
+      <p>Cole a lista, <b>um vendedor por linha</b>, no formato <b>Nome, Loja</b>. O usuário e a senha são criados sozinhos e dá pra ajustar antes de salvar.</p>
+      <textarea id="accLista" placeholder="Ana Souza, Centro&#10;Bruno Lima, Shopping&#10;Carla Dias, Parceira Visão"></textarea>
+      <div class="row-btns"><button class="btn ghost" id="accGerar" type="button">Gerar usuários e senhas</button></div>
+      <div id="accPrev"></div>
+    </div>
+    <div class="acc-box" id="accLista2"><p>Carregando os acessos…</p></div>
+  </section>
   <p class="demo-note">Esta aba só aparece para quem é admin. <button id="admRefresh" type="button" style="border:0;background:none;color:var(--green);font-weight:600;text-decoration:underline;padding:0">Atualizar</button></p>
 </main>
 
@@ -927,11 +956,67 @@ async function renderPeople(){
  $("#kpiTrail").textContent=equipe.length?Math.round(dados.reduce((a,d)=>a+d.done,0)/(equipe.length*8)*100)+"%":"–";
  $("#kpiWeek").textContent=minutos(dados.reduce((a,d)=>a+d.semanaSeg,0))||"–";
  $("#admStamp").textContent="Atualizado "+new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
- if(!dados.length){box.innerHTML='<p class="demo-note">Nenhum vendedor cadastrado ainda. Cadastre a equipe no Supabase (Authentication → Users).</p>';return}
+ if(!dados.length){box.innerHTML='<p class="demo-note">Nenhum vendedor cadastrado ainda. Use “Cadastrar vendedores” logo abaixo.</p>';return}
  box.innerHTML=dados.map(p=>`<article class="person"><button aria-expanded="false"><span class="av" style="background:${p.c}">${esc(p.n[0]||"?")}</span><span class="who"><b>${esc(p.n)}</b><small>${esc(p.l)} · Módulo ${p.m} · ${p.xp} XP · ${quando(p.ult)}</small></span><span class="mini"><i style="width:${p.done/8*100+6}%"></i></span></button>
  <div class="detail"><div class="eyebrow" style="margin:4px 0 6px">Material por material</div><div class="tbl"><table><thead><tr><th>Material</th><th>Tempo</th><th>Podcast ouvido</th><th>Situação</th></tr></thead><tbody>${p.rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]==="—"?"—":`<span class="chip ${r[2]==="100%"?"y":"n"}">${r[2]}</span>`}</td><td>${r[3]}</td></tr>`).join("")}</tbody></table></div></div></article>`).join("");
  document.querySelectorAll(".person>button").forEach(b=>b.onclick=()=>{const a=b.parentElement;a.classList.toggle("expanded");b.setAttribute("aria-expanded",a.classList.contains("expanded"))})}
-$("#admRefresh").onclick=renderPeople;
+$("#admRefresh").onclick=()=>{renderPeople();renderAcessos()};
+
+/* ---------- acessos da equipe: cadastro de vendedores pelo admin (funções em supabase/cadastro.sql) ---------- */
+const SITE="https://markinhosoh.github.io/oh-academy/";
+let ACESSOS=[];
+const slug=t=>String(t||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+function novaSenha(){const w=["lente","oculos","vitrine","charme","estilo","armacao","visao","brilho"],r=new Uint32Array(2);crypto.getRandomValues(r);return w[r[0]%w.length]+String(100+r[1]%900)}
+function sugerirUsuario(nome,loja,usados){
+ const n=slug(nome).split(" "),l=slug(loja).split(" ").filter(x=>!["loja","oh","otica","parceira","de","da","do"].includes(x))[0]||"";
+ let u=n[0]+(l?"."+l:"");
+ if(usados.has(u)&&n.length>1)u=n[0]+n[n.length-1]+(l?"."+l:"");
+ for(let i=2;usados.has(u);i++)u=u.replace(/\d*$/,"")+i;
+ usados.add(u);return u}
+function msgAcesso(a){return`Olá, ${a.nome.split(" ")[0]}! Seu acesso à Escola de Vendas OH! (OH! academy):\n${SITE}\nUsuário: ${a.usuario}\nSenha: ${a.senha}`}
+async function copiar(t){try{await navigator.clipboard.writeText(t);toast("Copiado! Agora é só colar no WhatsApp.");return true}catch(e){prompt("Copie o texto abaixo:",t);return false}}
+
+async function renderAcessos(){
+ if(!sb||ME?.papel!=="admin")return;
+ const box=$("#accLista2"),{data,error}=await sb.rpc("admin_acessos");
+ if(error){box.innerHTML='<p>Falta um passo no Supabase para cadastrar pelo portal: abra o SQL Editor, cole o arquivo <b>supabase/cadastro.sql</b> e clique em Run. Depois toque em Atualizar.</p>';return}
+ ACESSOS=data;
+ if(!data.length){box.innerHTML="<p>Ninguém cadastrado ainda.</p>";return}
+ box.innerHTML=`<div class="tbl"><table><thead><tr><th>Nome</th><th>Usuário</th><th>Último acesso</th><th></th></tr></thead><tbody>${data.map(a=>`<tr class="${a.ativo?"":"off"}" data-id="${a.id}"><td><b>${esc(a.nome)}</b><br><small style="color:var(--muted)">${esc(a.loja||"—")}${a.papel==="admin"?" · admin":""}${a.ativo?"":" · desativado"}</small></td><td>${esc(a.usuario)}</td><td>${a.ultimo_login?quando(a.ultimo_login):"nunca entrou"}</td><td>${a.papel==="admin"?"":`<div class="row-btns"><button class="mini-btn" data-a="senha" type="button">Nova senha</button><button class="mini-btn" data-a="ativo" type="button">${a.ativo?"Desativar":"Reativar"}</button></div>`}</td></tr>`).join("")}</tbody></table></div>`;
+ box.querySelectorAll("button[data-a]").forEach(b=>b.onclick=async()=>{const a=ACESSOS.find(x=>x.id===b.closest("tr").dataset.id);b.disabled=true;
+  if(b.dataset.a==="senha"){const senha=novaSenha();
+   if(!confirm(`Criar uma senha nova para ${a.nome}? A senha antiga deixa de funcionar.`)){b.disabled=false;return}
+   const r=await sb.rpc("admin_trocar_senha",{p_id:a.id,p_senha:senha});
+   if(r.error){toast("Não deu certo: "+r.error.message);b.disabled=false;return}
+   if(await copiar(msgAcesso({...a,senha})))alert(`Nova senha de ${a.nome}: ${senha}\n\nA mensagem com usuário e senha já foi copiada.`)}
+  else{if(a.ativo&&!confirm(`Desativar o acesso de ${a.nome}? A pessoa não consegue mais entrar, mas o histórico fica guardado.`)){b.disabled=false;return}
+   const r=await sb.from("perfis").update({ativo:!a.ativo}).eq("id",a.id);
+   if(r.error){toast("Não deu certo: "+r.error.message);b.disabled=false;return}
+   toast(a.ativo?"Acesso desativado.":"Acesso reativado.")}
+  renderAcessos();renderPeople()})}
+
+$("#accNovo").onclick=()=>{const f=$("#accForm");f.hidden=!f.hidden;if(!f.hidden)$("#accLista").focus()};
+$("#accGerar").onclick=()=>{
+ const usados=new Set(ACESSOS.map(a=>a.usuario));
+ const linhas=$("#accLista").value.split(/\n/).map(l=>l.trim()).filter(Boolean).map(l=>{const [nome,...r]=l.split(/[,;\t]/);return{nome:nome.trim(),loja:r.join(" ").trim()}}).filter(x=>x.nome);
+ if(!linhas.length){toast("Cole pelo menos um nome.");return}
+ const prev=$("#accPrev");
+ prev.innerHTML=`<div class="tbl"><table><thead><tr><th>Nome</th><th>Loja</th><th>Usuário</th><th>Senha</th><th>Situação</th></tr></thead><tbody>${linhas.map(x=>`<tr><td><input data-c="nome" value="${esc(x.nome)}"></td><td><input data-c="loja" value="${esc(x.loja)}"></td><td><input data-c="usuario" value="${sugerirUsuario(x.nome,x.loja,usados)}" autocapitalize="none" spellcheck="false"></td><td><input data-c="senha" value="${novaSenha()}" spellcheck="false"></td><td class="st">—</td></tr>`).join("")}</tbody></table></div>
+ <div class="row-btns"><button class="btn play" id="accCriar" type="button">Criar ${linhas.length} acesso${linhas.length>1?"s":""}</button><button class="btn ghost" id="accCopiar" type="button" hidden>Copiar mensagens</button></div>
+ <p>Anote ou copie as senhas antes de sair desta tela: depois elas não aparecem mais (dá pra gerar uma nova a qualquer hora).</p>`;
+ const criados=[];
+ $("#accCriar").onclick=async()=>{const bt=$("#accCriar");bt.disabled=true;bt.textContent="Criando…";
+  for(const tr of prev.querySelectorAll("tbody tr")){const st=tr.querySelector(".st");if(st.dataset.ok)continue;
+   const v=Object.fromEntries([...tr.querySelectorAll("input")].map(i=>[i.dataset.c,i.value.trim()]));v.usuario=v.usuario.toLowerCase();
+   st.textContent="…";const r=await sb.rpc("admin_criar_acesso",{p_usuario:v.usuario,p_nome:v.nome,p_loja:v.loja,p_senha:v.senha});
+   if(r.error){st.innerHTML=`<span class="bad">${esc(r.error.message)}</span>`;continue}
+   st.dataset.ok=1;st.innerHTML='<span class="ok">✓ Criado</span>';tr.querySelectorAll("input").forEach(i=>i.readOnly=true);criados.push(v)}
+  const falhas=prev.querySelectorAll(".st:not([data-ok])").length;
+  bt.disabled=!falhas;bt.textContent=falhas?`Tentar de novo (${falhas})`:"Pronto";
+  $("#accCopiar").hidden=!criados.length;
+  toast(falhas?`${criados.length} criados, ${falhas} com problema.`:"Acessos criados!");
+  renderAcessos();renderPeople()};
+ $("#accCopiar").onclick=()=>copiar(criados.map(msgAcesso).join("\n\n"))};
 
 /* ---------- Biblioteca ---------- */
 S.seen=S.seen||[];
@@ -975,7 +1060,7 @@ bindFilters("#libFilters",f=>libF=f,renderLib);bindFilters("#extFilters",f=>extF
 const VIEWS=["seller","library","extras","admin"];
 function view(v){if(!VIEWS.includes(v)||(v==="admin"&&ME?.papel!=="admin"))v="seller";VIEWS.forEach(x=>$("#"+x).hidden=x!==v);
  document.querySelectorAll(".dock button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===v));
- if(v==="seller")renderTrail();if(v==="library")renderLib();if(v==="extras")renderExt();if(v==="admin")renderPeople();
+ if(v==="seller")renderTrail();if(v==="library")renderLib();if(v==="extras")renderExt();if(v==="admin"){renderPeople();renderAcessos()}
  scrollTo({top:0});try{localStorage.setItem(KEY+"-view",v)}catch(e){}}
 document.querySelectorAll(".dock button[data-v]").forEach(b=>b.onclick=()=>view(b.dataset.v));
 document.querySelector(".dock button[data-go]").onclick=()=>irTrilha(nextModule()?.n||1);
