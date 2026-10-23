@@ -366,7 +366,7 @@ footer .logo{font-size:28px}
     <p class="subtitle">Situação, Problema, Implicação e Necessidade: o GPS pra descobrir o que o cliente precisa e fazer ele mesmo enxergar a solução.</p>
     <ol class="steps" aria-label="Como fazer este material">
       <li id="st-ler"><b>1</b><span>Leia</span><small>uns 9 minutos</small></li>
-      <li id="st-treino"><b>2</b><span>Treine</span><small>situações de balcão</small></li>
+      <li id="st-ouvir"><b>2</b><span>Ouça o podcast</span><small>cerca de 15 minutos</small></li>
       <li id="st-refletir"><b>3</b><span>Reflita</span><small>3 perguntas pro seu balcão</small></li>
     </ol>
   </header>
@@ -434,19 +434,37 @@ footer .logo{font-size:28px}
     <blockquote>“SPIN Selling é tipo usar multifocal pela primeira vez: no começo estranha, depois ninguém vive sem.”</blockquote>
   </div>
   <section id="treino" aria-labelledby="tr-title">
-    <p class="eyebrow">Etapa 2</p>
+    <p class="eyebrow">Pratique</p>
     <h2 id="tr-title">Treine no balcão</h2>
-    <p class="treino-note">Escolha o jeito OH! em cada situação. Acertando todas, a etapa fica concluída.</p>
+    <p class="treino-note">Escolha o jeito OH! em cada situação.</p>
     <div class="owner"><div class="sit"><p>“Você já tem óculos ou é o primeiro?” é uma pergunta de…</p><div class="opts"><button data-ok="Isso! S: os fatos básicos.">Situação</button><button>Implicação</button><button>Necessidade</button></div><p class="fb" aria-live="polite"></p></div><div class="sit"><p>“Sabia que lente riscada força a vista o dia todo?” é…</p><div class="opts"><button>Situação</button><button data-ok="Isso! I: mostrar a consequência.">Implicação</button><button>Problema</button></div><p class="fb" aria-live="polite"></p></div><div class="sit"><p>“Como seria trabalhar sem a vista cansada no fim do dia?” é…</p><div class="opts"><button>Problema</button><button data-ok="Isso! N: o cliente fala o benefício.">Necessidade</button></div><p class="fb" aria-live="polite"></p></div><div class="sit"><p>Quando é a hora de apresentar a proposta?</p><div class="opts"><button>Logo depois da primeira pergunta</button><button data-ok="Isso! Se ele fala, ele acredita.">Depois que o cliente verbalizou os benefícios</button></div><p class="fb" aria-live="polite"></p></div></div>
   </section>
-  
+  <section class="pod" id="podcast" aria-labelledby="pod-title">
+    <p class="eyebrow" style="color:inherit;opacity:.8">Etapa 2</p>
+    <h2 id="pod-title">Podcast: Investigando necessidades na ótica</h2>
+    <p>Terminou a leitura? Agora dá o play. Dá pra ouvir no caminho pro trabalho, com fone, ou na pausa do café.</p>
+    <audio id="audio" preload="metadata" data-src="podcast-investigando-necessidades.mp3"></audio>
+    <div class="player">
+      <button class="play" id="play" aria-label="Tocar podcast"><svg id="ico" viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></svg></button>
+      <div class="track">
+        <label for="seek" class="eyebrow" style="color:inherit;opacity:.8;font-size:12px">Investigando necessidades na ótica</label>
+        <input id="seek" type="range" min="0" max="876" step="1" value="0" aria-label="Posição do áudio">
+        <div class="times"><span id="cur">0:00</span><span id="dur">14:36</span></div>
+      </div>
+    </div>
+    <div class="speed">
+      <div class="skip"><button id="back" aria-label="Voltar 15 segundos">−15s</button><button id="fwd" aria-label="Avançar 15 segundos">+15s</button></div>
+      <span style="margin-left:8px;font-weight:700">Velocidade</span>
+      <button data-rate="1" aria-pressed="true">1x</button><button data-rate="1.25" aria-pressed="false">1,25x</button><button data-rate="1.5" aria-pressed="false">1,5x</button>
+    </div>
+  </section>
   <section>
     <p class="eyebrow">Etapa 3</p>
     <h2>Leve pro seu balcão</h2>
     <ol class="reflect"><li>Qual letra do SPIN você mais pula?<span>Normalmente é o I. Treine uma pergunta de implicação.</span></li><li>Escreva uma pergunta de Necessidade pra um cliente que dirige à noite.<span>Comece com “Como seria…”.</span></li><li>No último atendimento, quem falou mais: você ou o cliente?<span>A meta é ele falar mais.</span></li></ol>
     <div class="checks">
       <label class="check"><input type="checkbox" id="c-ler" data-step="st-ler"><span>Li o material</span></label>
-      <label class="check"><input type="checkbox" id="c-treino" data-step="st-treino"><span>Acertei as situações do treino</span></label>
+      <label class="check"><input type="checkbox" id="c-ouvir" data-step="st-ouvir"><span>Ouvi o podcast até o fim</span></label>
       <label class="check"><input type="checkbox" id="c-refletir" data-step="st-refletir"><span>Respondi as 3 perguntas</span></label>
     </div>
   </section>

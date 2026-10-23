@@ -352,6 +352,8 @@ footer .logo{font-size:28px}
 .mod-card b{font-family:var(--display);text-transform:uppercase;font-size:20px;color:var(--green);line-height:1.1;display:block}
 .mod-card small{color:var(--ink-soft);font-weight:700}
 .mod-card p{font-size:15px}
+.swatches.toggle button.sw{border-radius:18px;padding:0;background:var(--paper);color:var(--ink);border:2px solid var(--line)}
+.swatches.toggle button.sw[aria-pressed="true"]{border-color:var(--orange);background:var(--paper);color:var(--ink);box-shadow:0 0 0 3px var(--orange)}
 </style>
 </head><body>
 <div class="wrap">
@@ -364,7 +366,7 @@ footer .logo{font-size:28px}
     <p class="subtitle">Postura, rosto, gestos, espaço e presença: tudo que você comunica sem dizer uma palavra.</p>
     <ol class="steps" aria-label="Como fazer este material">
       <li id="st-ler"><b>1</b><span>Leia</span><small>uns 8 minutos</small></li>
-      <li id="st-treino"><b>2</b><span>Treine</span><small>situações de balcão</small></li>
+      <li id="st-ouvir"><b>2</b><span>Ouça o podcast</span><small>cerca de 27 minutos</small></li>
       <li id="st-refletir"><b>3</b><span>Reflita</span><small>3 perguntas pro seu balcão</small></li>
     </ol>
   </header>
@@ -465,10 +467,29 @@ footer .logo{font-size:28px}
     <blockquote>“Cliente não compra de vendedor. Compra de gente que entende ele. E o corpo é o primeiro a mostrar isso.”</blockquote>
   </div>
   <section id="treino" aria-labelledby="tr-title">
-    <p class="eyebrow">Etapa 2</p>
+    <p class="eyebrow">Pratique</p>
     <h2 id="tr-title">Treine no balcão</h2>
-    <p class="treino-note">Escolha o jeito OH! em cada situação. Acertando todas, a etapa fica concluída.</p>
+    <p class="treino-note">Escolha o jeito OH! em cada situação.</p>
     <div class="owner"><div class="sit"><p>Você explicou o benefício da lente. E agora?</p><div class="opts"><button>Continuo falando dos outros tratamentos</button><button data-ok="Isso! O silêncio deixa o cliente pensar e passa segurança.">Faço uma pausa de 2 segundos</button></div><p class="fb" aria-live="polite"></p></div><div class="sit"><p>O cliente deu um passo pra trás enquanto você mostrava as armações.</p><div class="opts"><button data-ok="Isso! Cada recuo é um “não” silencioso.">Respeito o espaço e me afasto um pouco</button><button>Chego mais perto pra ele ver melhor</button></div><p class="fb" aria-live="polite"></p></div><div class="sit"><p>Enquanto explica as três zonas da lente multifocal, suas mãos…</p><div class="opts"><button>Ficam no bolso</button><button data-ok="Isso! O gesto reforça o que você fala.">Mostram perto, médio e longe</button><button>Ficam cruzadas</button></div><p class="fb" aria-live="polite"></p></div><div class="sit"><p>Os pés do cliente estão virados pra porta.</p><div class="opts"><button>Começo a explicar todas as lentes</button><button data-ok="Isso! Ele quer ir. Sair bem é voltar depois.">Resumo, ofereço ajuda e deixo a porta aberta</button></div><p class="fb" aria-live="polite"></p></div></div>
+  </section>
+  <section class="pod" id="podcast" aria-labelledby="pod-title">
+    <p class="eyebrow" style="color:inherit;opacity:.8">Etapa 2</p>
+    <h2 id="pod-title">Podcast: O corpo vende antes das palavras</h2>
+    <p>Terminou a leitura? Agora dá o play. Dá pra ouvir no caminho pro trabalho, com fone, ou na pausa do café.</p>
+    <audio id="audio" preload="metadata" data-src="podcast-corpo-vende.mp3"></audio>
+    <div class="player">
+      <button class="play" id="play" aria-label="Tocar podcast"><svg id="ico" viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></svg></button>
+      <div class="track">
+        <label for="seek" class="eyebrow" style="color:inherit;opacity:.8;font-size:12px">O corpo vende antes das palavras</label>
+        <input id="seek" type="range" min="0" max="1606" step="1" value="0" aria-label="Posição do áudio">
+        <div class="times"><span id="cur">0:00</span><span id="dur">26:46</span></div>
+      </div>
+    </div>
+    <div class="speed">
+      <div class="skip"><button id="back" aria-label="Voltar 15 segundos">−15s</button><button id="fwd" aria-label="Avançar 15 segundos">+15s</button></div>
+      <span style="margin-left:8px;font-weight:700">Velocidade</span>
+      <button data-rate="1" aria-pressed="true">1x</button><button data-rate="1.25" aria-pressed="false">1,25x</button><button data-rate="1.5" aria-pressed="false">1,5x</button>
+    </div>
   </section>
   <section>
     <p class="eyebrow">Etapa 3</p>
@@ -476,7 +497,7 @@ footer .logo{font-size:28px}
     <ol class="reflect"><li>O que o seu corpo diz quando a loja está vazia?<span>Peça pra um colega te observar por 5 minutos.</span></li><li>Qual gesto seu atrapalha sem você perceber?<span>Escolha um pra cortar esta semana.</span></li><li>Em qual momento do atendimento você mais fala sem parar?<span>Ali é onde cabe a sua pausa de 2 segundos.</span></li></ol>
     <div class="checks">
       <label class="check"><input type="checkbox" id="c-ler" data-step="st-ler"><span>Li o material</span></label>
-      <label class="check"><input type="checkbox" id="c-treino" data-step="st-treino"><span>Acertei as situações do treino</span></label>
+      <label class="check"><input type="checkbox" id="c-ouvir" data-step="st-ouvir"><span>Ouvi o podcast até o fim</span></label>
       <label class="check"><input type="checkbox" id="c-refletir" data-step="st-refletir"><span>Respondi as 3 perguntas</span></label>
     </div>
   </section>
