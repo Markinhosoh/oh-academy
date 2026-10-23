@@ -355,6 +355,7 @@ th{color:var(--muted);font-weight:600;font-size:12px}
 @keyframes glow{50%{box-shadow:0 0 0 2px var(--orange),0 0 22px -2px color-mix(in srgb,var(--orange) 70%,transparent)}}
 .link{display:flex;gap:14px;align-items:stretch;background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);padding:14px;text-decoration:none;color:inherit;transition:transform .2s}
 .link:hover{transform:translateY(-2px)}
+.link .cov.book{width:64px;min-height:88px;aspect-ratio:3/4;box-shadow:0 6px 14px -6px rgba(0,0,0,.8)}
 .link .cov{flex:none;width:76px;min-height:76px;border-radius:12px;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:13px;color:#fff;text-align:center;padding:6px;line-height:1.1}
 .link .tx{min-width:0;display:grid;gap:3px;align-content:center}
 .link .tx b{font-family:var(--display);font-size:16px;line-height:1.2}
@@ -443,6 +444,24 @@ body.auth .top,body.auth .dock,body.auth main{display:none!important}
 @media(max-width:600px){.top .bar{gap:10px}.logo .word{letter-spacing:.16em;font-size:12px}.xp-pill{padding-right:10px}.rung{font-size:9px;letter-spacing:.02em}}
 .login{background:radial-gradient(60% 45% at 12% 8%,#2a1206,transparent 70%),radial-gradient(55% 40% at 95% 30%,#12261c,transparent 70%),#000}
 .login .card{background:#1c1c1c;border:1px solid #3a3a3a;border-radius:16px}
+/* material aberto dentro do portal */
+.viewer{position:fixed;inset:0;z-index:30;background:#000;display:flex;flex-direction:column;animation:vin .35s cubic-bezier(.2,.8,.2,1)}
+.viewer[hidden]{display:none!important}
+@keyframes vin{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.vbar{display:flex;align-items:center;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 8px) max(12px,env(safe-area-inset-right,0px)) 8px max(12px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--line)}
+.vt{min-width:0;flex:1;display:flex;flex-direction:column;line-height:1.2}
+.vt small{color:var(--orange);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.vt b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vxp{font-size:12px;font-weight:800;color:var(--orange);white-space:nowrap}
+.vxp.ok{color:var(--green-l)}
+.viewer iframe{flex:1;width:100%;border:0;background:#efe2c9}
+.toast{z-index:45}
+.step .go{color:var(--muted);font-size:20px;line-height:1}
+.step.open>button{cursor:pointer}
+.step .st small b{color:var(--orange);font-weight:800}
+#mhArt>.art{z-index:-1}
+.step.done .xp{color:var(--green-l)}
+.item.lk{opacity:.55}
 .login input{background:#000;border-color:#3a3a3a;border-radius:8px}
 .login input:focus{border-color:var(--orange);box-shadow:0 0 0 4px var(--orange-soft)}
 .badge-ex{background:var(--orange-soft)}
@@ -527,7 +546,7 @@ th,td{border-bottom-color:#3a3a3a}
         <div class="tiers" id="etChips"></div>
       </div>
     </div>
-    <div class="chips" id="homeChips" role="group" aria-label="Filtrar conteúdo"><small>Ver:</small><button data-f="all" aria-pressed="true">Tudo</button><button data-f="aula" aria-pressed="false">Aulas</button><button data-f="audio" aria-pressed="false">Podcasts</button><button data-f="pdf" aria-pressed="false">Apostilas</button><button data-f="extra" aria-pressed="false">Extras</button></div>
+    <div class="chips" id="homeChips" role="group" aria-label="Filtrar conteúdo"><small>Ver:</small><button data-f="all" aria-pressed="true">Tudo</button><button data-f="aula" aria-pressed="false">Aulas</button><button data-f="audio" aria-pressed="false">Podcasts</button><button data-f="pdf" aria-pressed="false">Materiais</button><button data-f="extra" aria-pressed="false">Extras</button></div>
   </div>
 
   <div id="rows"></div>
@@ -548,10 +567,10 @@ th,td{border-bottom-color:#3a3a3a}
   <section class="page-head">
     <div class="eyebrow">Biblioteca</div>
     <h1>Seus materiais</h1>
-    <p>Tudo que você já desbloqueou na trilha, pra rever quando quiser: apostilas, podcasts e resumos.</p>
+    <p>Tudo que você já desbloqueou na trilha, pra rever quando quiser: leituras, podcasts e treinos de balcão.</p>
   </section>
   <div class="filters" id="libFilters" role="group" aria-label="Filtrar por tipo">
-    <button data-f="all" aria-pressed="true">Tudo</button><button data-f="pdf" aria-pressed="false">Apostilas</button><button data-f="audio" aria-pressed="false">Podcasts</button><button data-f="resumo" aria-pressed="false">Resumos</button>
+    <button data-f="all" aria-pressed="true">Tudo</button><button data-f="audio" aria-pressed="false">Com podcast</button><button data-f="treino" aria-pressed="false">Com treino</button>
   </div>
   <div id="libList" class="lib"></div>
 </main>
@@ -560,20 +579,20 @@ th,td{border-bottom-color:#3a3a3a}
   <section class="page-head">
     <div class="eyebrow">Extras OH!</div>
     <h1>Pra ir além</h1>
-    <p>Notícias do setor, vídeos, sites e leituras que o time OH! separou pra você. Tudo que chega novo ganha destaque.</p>
+    <p>Resenhas do Clube de Leitura OH!, notícias do setor, vídeos e leituras que o time OH! separou pra você. Tudo que chega novo ganha destaque.</p>
   </section>
   <div class="filters" id="extFilters" role="group" aria-label="Filtrar por categoria">
-    <button data-f="all" aria-pressed="true">Tudo</button><button data-f="Vídeo" aria-pressed="false">Vídeos</button><button data-f="Leitura" aria-pressed="false">Leituras</button><button data-f="Notícia" aria-pressed="false">Notícias</button><button data-f="Dica" aria-pressed="false">Dicas</button>
+    <button data-f="all" aria-pressed="true">Tudo</button><button data-f="Resenha" aria-pressed="false">Resenhas</button><button data-f="Vídeo" aria-pressed="false">Vídeos</button><button data-f="Leitura" aria-pressed="false">Leituras</button><button data-f="Notícia" aria-pressed="false">Notícias</button><button data-f="Dica" aria-pressed="false">Dicas</button>
   </div>
   <div id="extList" class="ext"></div>
-  <p class="demo-note">Links de exemplo. No portal, o admin cadastra os links e marca o que é novo.</p>
+  <p class="demo-note">As resenhas abrem em PDF numa nova aba.</p>
 </main>
 
 <main class="wrap" id="admin" hidden>
   <section class="admin-head">
     <span class="badge-ex" id="admStamp">Atualizado agora</span>
     <h1>Painel da equipe</h1>
-    <p style="margin:0;color:var(--muted)">Quanto tempo cada vendedor passou em cada material, se ouviu os áudios e como foi nos quizzes. Toque em um nome para ver o detalhe.</p>
+    <p style="margin:0;color:var(--muted)">Quanto tempo cada vendedor passou em cada material, quantos cliques deu nos visuais e quanto ouviu dos podcasts. Toque em um nome para ver o detalhe.</p>
   </section>
   <div class="kpis">
     <div class="kpi"><b id="kpiN">–</b><small>vendedores</small></div>
@@ -584,18 +603,23 @@ th,td{border-bottom-color:#3a3a3a}
   <p class="demo-note">Esta aba só aparece para quem é admin. <button id="admRefresh" type="button" style="border:0;background:none;color:var(--green);font-weight:600;text-decoration:underline;padding:0">Atualizar</button></p>
 </main>
 
-<section class="sheet" id="modSheet" aria-label="Módulo 1">
+<section class="sheet" id="modSheet" aria-label="Módulo">
   <div class="wrap">
     <div class="sheet-head"><button class="back" id="closeMod">← Trilha</button><div class="spacer"></div><div class="xp-pill"><span class="star">★</span><span id="xpMod">0</span> XP</div></div>
     <div class="mod-hero">
-      <div class="art a1"><div class="art photo photo-side"></div></div>
-      <div class="eyebrow">Etapa 1 · Módulo 1</div>
-      <h1>Cultura OH! e Vendas 360º</h1>
-      <p>O DNA OH!, orgulho de vender e a mentalidade de quem faz o cliente voltar.</p>
-      <div class="mprog"><div class="track"><div class="fill" id="mfill"></div></div><span id="mtxt">0 de 5</span></div>
+      <div id="mhArt"></div>
+      <div class="eyebrow" id="mhEb">Etapa 1 · Módulo 1</div>
+      <h1 id="mhT">Cultura OH! e Vendas 360º</h1>
+      <p id="mhS"></p>
+      <div class="mprog"><div class="track"><div class="fill" id="mfill"></div></div><span id="mtxt">0 de 3</span></div>
     </div>
     <div class="steps" id="steps"></div>
   </div>
+</section>
+
+<section class="viewer" id="viewer" hidden aria-label="Material">
+  <div class="vbar"><button class="back" id="closeMat">← Voltar</button><div class="vt"><small id="vEb"></small><b id="vT"></b></div><span class="vxp" id="vXp"></span></div>
+  <iframe id="vFrame" title="Material de estudo"></iframe>
 </section>
 
 <div class="win" id="win" hidden>
@@ -607,9 +631,9 @@ th,td{border-bottom-color:#3a3a3a}
       <text x="60" y="81" text-anchor="middle" font-family="Montserrat, sans-serif" font-weight="900" font-size="26" fill="#fff">OH!</text>
     </svg></div>
     <div class="eyebrow">Medalha conquistada</div>
-    <h2>Vendedor de Orgulho</h2>
+    <h2 id="winH">Vendedor de Orgulho</h2>
     <div class="bigxp">+<span id="winXp">0</span> XP</div>
-    <p>Módulo 2: Presença e Linguagem Corporal foi liberado na trilha, e os materiais dele já estão na sua Biblioteca.</p>
+    <p id="winTxt"></p>
     <button class="cta gold" id="winOk">Ver minha trilha</button>
   </div>
 </div>
@@ -629,6 +653,18 @@ const MODS=[
  {n:6,t:"Persuasão Ética e Objeções",s:"Método EVA e técnicas FBI"},
  {n:7,t:"Fechamento com Charme",s:"O sim leve e natural"},
  {n:8,t:"Entrega Perfeita e Fidelização",s:"A hora do show e o pós-venda"}];
+// Materiais de cada módulo (páginas em materiais/mN/material-K.html). Cada um libera depois do anterior.
+const MATS={
+ 1:[{t:"Propósito no balcão",d:"Nossa filosofia de atendimento: a felicidade e o encantamento do cliente, em cada detalhe da venda.",s:"Leitura 5 min · Podcast 20 min",au:true},{t:"Gente vende pra gente",d:"A psicologia do atendimento OH!: rapport, escuta e linguagem corporal pra conquistar antes de vender.",s:"Leitura 8 min · Podcast 20 min",au:true},{t:"O espelho do vendedor",d:"Autoimagem na Cultura OH!: como você se enxerga muda o jeito que você atende, e o jeito que o cliente se enxerga.",s:"Leitura 8 min · Podcast 21 min",au:true}],
+ 2:[{t:"O corpo vende antes da boca",d:"Postura, rosto, gestos, espaço e presença: tudo que você comunica sem dizer uma palavra.",s:"Leitura 8 min · Podcast 27 min",au:true},{t:"Os primeiros 30 segundos",d:"O palco pronto, a chegada certa pra cada cliente e a alegria que faz a pessoa querer ficar.",s:"Leitura 6 min · Treino de balcão",au:false}],
+ 3:[{t:"Deixe o cliente falar",d:"As perguntas que descobrem a dor, o desejo e o bolso do cliente, sem parecer interrogatório.",s:"Leitura 7 min · Treino de balcão",au:false},{t:"SPIN Selling OH!",d:"Situação, Problema, Implicação e Necessidade: o GPS pra descobrir o que o cliente precisa e fazer ele mesmo enxergar a solução.",s:"Leitura 9 min · Podcast 15 min",au:true}],
+ 4:[{t:"Do formato do rosto ao formato de vida",d:"Consultoria de estilo do jeito OH!: propósito, personalidade e autenticidade, não só regra estética.",s:"Leitura 8 min · Podcast 14 min",au:true},{t:"A cor da alma",d:"Cores que viram declaração de personalidade, e perfis pra você enxergar o estilo de cada cliente.",s:"Leitura 7 min · Treino de balcão",au:false},{t:"Por dentro do produto",d:"Como nascem nossas armações artesanais de acetato e por que as lentes free form mudaram o jogo.",s:"Leitura 6 min · Treino de balcão",au:false}],
+ 5:[{t:"Ofertas irresistíveis",d:"Como transformar o que o cliente te contou numa oferta tão boa que dá vergonha dizer não.",s:"Leitura 7 min · Treino de balcão",au:false},{t:"Truques legais do cérebro",d:"Âncora, efeito isca, escassez, porquê e outros gatilhos mentais, sempre com a ética da OH!.",s:"Leitura 8 min · Treino de balcão",au:false}],
+ 6:[{t:"Persuasão estilo FBI",d:"Espelhamento, rotulagem, escuta tática e linguagem positiva: influência com empatia e precisão.",s:"Leitura 8 min · Treino de balcão",au:false},{t:"Método EVA",d:"Os 4 tipos de objeção e como contornar cada um: Escutar, Validar e Apresentar valor.",s:"Leitura 9 min · Treino de balcão",au:false}],
+ 7:[{t:"Fechamento com charme",d:"O sim leve e natural: confiança, clareza e as 3 atitudes que fazem o cliente escolher sem se sentir empurrado.",s:"Leitura 7 min · Treino de balcão",au:false},{t:"O sim natural",d:"Afirmativa assumida, alternativa limitada e o resumo que transforma “gostei” em “vou levar”.",s:"Leitura 5 min · Treino de balcão",au:false}],
+ 8:[{t:"A hora do show",d:"Os bastidores da entrega, o passo a passo pra brilhar e o toque final depois que o cliente sai.",s:"Leitura 5 min · Treino de balcão",au:false},{t:"Relacionamentoooo",d:"Follow up do jeito OH!: mensagens que geram valor e uma régua pra nunca deixar o cliente esfriar.",s:"Leitura 5 min · Treino de balcão",au:false},{t:"Vendedor que cresce",d:"Feedback, metas pessoais e autoavaliação: o hábito que transforma bons vendedores em referências.",s:"Leitura 4 min · Treino de balcão",au:false}]};
+const MEDAL=["","Vendedor de Orgulho","Presença de Palco","Detetive de Necessidades","Consultor de Estilo","Mestre das Ofertas","Persuasão do Bem","Fechamento com Charme","Mestre OH!"];
+const XP_MAT=50,XP_MOD=100;
 const LEVELS=[{n:"Aprendiz",min:0},{n:"Consultor",min:400},{n:"Especialista",min:1000},{n:"Mestre OH!",min:1650}];
 /* ---------- Supabase ---------- */
 const SB_URL="https://nlvvkbybglpaortoeulg.supabase.co";
@@ -637,7 +673,7 @@ const LOGIN_DOMAIN="ohacademy.app";
 const sb=window.supabase?window.supabase.createClient(SB_URL,SB_KEY):null;
 let ME=null;
 let KEY="ohacademy";
-let S={xp:0,done:[],steps:{},seen:[]};
+let S={xp:0,done:[],mats:{},seen:[]};
 // Só o que é preferência do aparelho fica no navegador (o que já foi visto como "Novo"); progresso e XP vêm do Supabase.
 function save(){try{localStorage.setItem(KEY+"-seen",JSON.stringify(S.seen))}catch(e){}}
 function loadSeen(){try{return JSON.parse(localStorage.getItem(KEY+"-seen")||"[]")}catch(e){return[]}}
@@ -702,21 +738,24 @@ const FX={
 const art=n=>`<div class="art a${n}"><svg class="fx" viewBox="0 0 110 62" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">${FX[n]||""}</svg></div>`;
 const photo='<div class="art photo"></div>';
 const cap=t=>t[0].toUpperCase()+t.slice(1);
-const KINDS={aula:"AULA",audio:"ÁUDIO",pdf:"PDF",resumo:"RESUMO",extra:"LINK"};
+const KINDS={aula:"AULA",audio:"ÁUDIO",pdf:"PDF",resumo:"RESUMO",extra:"LINK",resenha:"LIVRO"};
 let FIRST="",homeF="all",slide=0,slideT=null;
 
 function nextModule(){return MODS.find(m=>stateOf(m.n)==="open")||null}
-function m1Pct(){return Math.round(STEPS.filter(x=>S.steps[x.id]).length/STEPS.length*100)}
-function modPct(n){return S.done.includes(n)?100:n===1?m1Pct():0}
+const matDone=(n,k)=>!!S.mats[n+"-"+k];
+function matState(n,k){if(matDone(n,k))return"done";if(stateOf(n)==="locked")return"lock";return k===1||matDone(n,k-1)||S.done.includes(n)?"open":"lock"}
+function modPct(n){return S.done.includes(n)?100:Math.round(MATS[n].filter((_,i)=>matDone(n,i+1)).length/MATS[n].length*100)}
+const proxMat=n=>{const i=MATS[n].findIndex((_,j)=>matState(n,j+1)==="open");return i<0?null:i+1};
+const ehNovo=(n,k)=>matState(n,k)!=="lock"&&!(n===1&&k===1)&&!S.seen.includes(`M${n}-${k}`);
 function trailPct(){return Math.round(MODS.reduce((a,m)=>a+modPct(m.n),0)/MODS.length)}
 
 function slides(){
  const out=[];const nx=nextModule();
- if(nx){const p=modPct(nx.n);const stp=nx.n===1&&STEPS.find((x,i)=>stepState(i)==="open");
-  out.push({art:nx.n===1?"photo":nx.n,kick:"Seu episódio de hoje",h:nx.t,p:nx.s+"."+(stp?` Próximo passo: ${stp.t}.`:""),
-   meta:[`Etapa ${nx.n>4?2:1} · Módulo ${nx.n}`,`${nx.n===1?STEPS.length:LIB[nx.n].length} materiais`],xp:nx.n===1?"+200 XP":"XP ao concluir",prog:p||null,cta:p?"Continuar":"Começar",go:()=>openMod(nx.n)})}
+ if(nx){const p=modPct(nx.n);const k=proxMat(nx.n);
+  out.push({art:nx.n===1?"photo":nx.n,kick:"Seu episódio de hoje",h:nx.t,p:nx.s+"."+(k?` Próximo: ${MATS[nx.n][k-1].t}.`:""),
+   meta:[`Etapa ${nx.n>4?2:1} · Módulo ${nx.n}`,`${MATS[nx.n].length} materiais`],xp:`+${MATS[nx.n].length*XP_MAT+XP_MOD} XP`,prog:p||null,cta:p?"Continuar":"Começar",go:()=>k?abrirMat(nx.n,k):openMod(nx.n)})}
  if(stateOf(1)!=="locked")out.push({art:"photo",kick:"<b>Novo</b> OH! Destaque do mês",h:"O DNA OH! em 20 minutos",p:"O podcast do Módulo 1: ouça no caminho pra loja. Ele retoma de onde você parou.",
-  meta:["Módulo 1 · Cultura OH!","Áudio","20 min"],xp:"Podcast OH!",cta:"Ouvir agora",go:()=>abrirPasso(1,"audio")});
+  meta:["Módulo 1 · Cultura OH!","Áudio","20 min"],xp:"Podcast OH!",cta:"Ouvir agora",go:()=>abrirMat(1,1)});
  const lk=MODS.find(m=>stateOf(m.n)==="locked");
  if(lk)out.push({art:lk.n,kick:"Vem aí na sua trilha",h:lk.t,p:`${lk.s}. Libera quando você concluir o Módulo ${lk.n-1}.`,meta:[`Etapa ${lk.n>4?2:1} · Módulo ${lk.n}`],xp:"🔒 Bloqueado",lock:true,cta:"Ver na trilha",go:()=>irTrilha(lk.n)});
  if(!nx)out.unshift({art:8,kick:"Trilha completa",h:"Você é Mestre OH!",p:"Concluiu os 8 módulos. Reveja o que quiser na Biblioteca.",meta:["Escola de Vendas OH!"],xp:`${S.xp} XP`,cta:"Abrir Biblioteca",go:()=>view("library")});
@@ -737,8 +776,8 @@ $("#dots").addEventListener("click",e=>{const b=e.target.closest("button");if(b)
 function tile(o){
  const tag=o.href?"a":"button";
  return `<${tag} class="tile${o.lock?" locked":""}" ${o.href?`href="${o.href}" target="_blank" rel="noopener"`:'type="button"'} data-k="${o.k}" data-id="${o.id||""}" aria-label="${esc(o.b)}${o.lock?" (bloqueado)":""}">
-  <span class="cv">${o.photo?photo:art(o.a)}${o.nw?'<span class="badge-new">Novo</span>':""}<span class="kind">${o.lock?"🔒":KINDS[o.kind]||""}</span>
-   <span class="ttl"><small>${o.eb}</small>${o.t}</span>${o.lock?"":`<span class="playhint"><span>${ICON.play}</span></span>`}
+  <span class="cv">${o.img?`<div class="art" style="background-image:url(${o.img});background-position:center 20%"></div>`:o.photo?photo:art(o.a)}${o.nw?'<span class="badge-new">Novo</span>':""}<span class="kind">${o.lock?"🔒":KINDS[o.kind]||""}</span>
+   ${o.img?"":`<span class="ttl"><small>${o.eb}</small>${o.t}</span>`}${o.lock?"":`<span class="playhint"><span>${ICON.play}</span></span>`}
    ${o.p!=null?`<span class="pb"><i style="width:${o.p}%"></i></span>`:""}</span>
   <span class="info"><b>${o.b}</b><span>${o.s}</span></span></${tag}>`}
 function poster(m){const st=stateOf(m.n);const p=modPct(m.n);
@@ -753,8 +792,8 @@ function renderTrail(){
  // saudação, anel e etapa
  const h=new Date().getHours();
  $("#hiT").textContent=`${h<12?"Bom dia":h<18?"Boa tarde":"Boa noite"}${FIRST?", "+FIRST:""}! ${pct?"Embalou!":"Bora começar?"}`;
- $("#hiS").textContent=!nx?"Trilha completa. Você é referência na loja!":nx.n===1&&!m1Pct()?"Seu primeiro episódio é o Módulo 1: Cultura OH! e Vendas 360º.":
-  modPct(nx.n)?`Você já fez ${modPct(nx.n)}% do Módulo ${nx.n}. Termine o quiz pra liberar o Módulo ${Math.min(8,nx.n+1)}.`:`O Módulo ${nx.n} já está liberado: ${nx.t}. Bora?`;
+ $("#hiS").textContent=!nx?"Trilha completa. Você é referência na loja!":nx.n===1&&!modPct(1)?"Seu primeiro episódio é o Módulo 1: Cultura OH! e Vendas 360º.":
+  modPct(nx.n)?`Você já fez ${modPct(nx.n)}% do Módulo ${nx.n}. Conclua os materiais pra liberar o Módulo ${Math.min(8,nx.n+1)}.`:`O Módulo ${nx.n} já está liberado: ${nx.t}. Bora?`;
  $("#ringPct").textContent=pct+"%";requestAnimationFrame(()=>requestAnimationFrame(()=>$("#ringFill").style.strokeDashoffset=264*(1-pct/100)));
  const et=nx&&nx.n>4?2:1,ns=et===1?[1,2,3,4]:[5,6,7,8];
  $("#etLab").textContent=`▶ Etapa ${et} · ${et===1?"Preparação, Conexão e Diagnóstico":"Oferta, Fechamento e Encantamento"}`;
@@ -769,28 +808,22 @@ function renderTrail(){
 
  // fileiras
  const R=[];
- const m1=STEPS.map((st,i)=>({st,s:stepState(i)}));
- if(!S.done.includes(1)){
-  R.push(["continuar","Continuar assistindo","Módulo 1 · Cultura OH! e Vendas 360º","aula",m1.map(({st,s},i)=>tile({k:"passo",id:st.id,kind:st.id==="audio"?"audio":"aula",photo:st.id==="audio",a:[1,4,2,5,3][i],
-   eb:`Módulo 1 · Passo ${i+1}`,t:cap(st.t.split(":").pop().trim()),b:st.t,s:s==="done"?"✓ Concluído":s==="open"?`${st.s}${st.xp?` · +${st.xp} XP`:""}`:"Conclua o passo anterior",p:s==="done"?100:s==="open"?0:null,lock:s==="lock"})).join("")])}
- else R.push(["continuar","Reveja quando quiser","Módulo 1 concluído","aula",m1.map(({st},i)=>tile({k:"passo",id:st.id,kind:st.id==="audio"?"audio":"aula",photo:st.id==="audio",a:[1,4,2,5,3][i],eb:`Módulo 1 · Passo ${i+1}`,t:cap(st.t.split(":").pop().trim()),b:st.t,s:"✓ Concluído",p:100})).join("")]);
+ const mt=(n,k,o={})=>{const x=MATS[n][k-1],s=matState(n,k);
+  return tile({k:"mat",id:`M${n}-${k}`,kind:x.au?"audio":"aula",photo:n===1&&k===1,a:(n+k)%8+1,nw:ehNovo(n,k),eb:`Módulo ${n} · Material ${k}`,t:x.t,b:x.t,
+   s:s==="done"?"✓ Concluído":s==="open"?`${x.s} · +${XP_MAT} XP`:stateOf(n)==="locked"?`Libera no Módulo ${n}`:"Conclua o material anterior",p:s==="done"?100:s==="open"?0:null,lock:s==="lock",...o})};
+ if(nx)R.push(["continuar",modPct(nx.n)?"Continuar assistindo":"Comece por aqui",`Módulo ${nx.n} · ${nx.t}`,"aula",MATS[nx.n].map((_,i)=>mt(nx.n,i+1)).join("")]);
  R.push(["trilha","Sua trilha · Escola de Vendas OH!","Os 8 módulos ficam à vista; cada um libera quando você conclui o anterior.","aula",
   MODS.slice(0,4).map(poster).join("")+`<div class="stage-sep"><small>Etapa 2</small><b>Oferta, Fechamento e Encantamento</b><i></i></div>`+MODS.slice(4).map(poster).join("")]);
- const libIt=(m,i)=>{const it=LIB[m][i];return{id:`L${m}-${i}`,m,k:it[0],t:it[1],s:it[2]}};
- const novos=libNewIds().map(id=>{const[m,i]=id.slice(1).split("-").map(Number);return libIt(m,i)});
+ const novos=[];MODS.forEach(m=>MATS[m.n].forEach((_,i)=>{if(ehNovo(m.n,i+1))novos.push(mt(m.n,i+1))}));
  const extNovos=EXT.filter(e=>e.nw&&!S.seen.includes(e.id));
  if(novos.length||extNovos.length)R.push(["novidades","Chegou agora","Tudo que é novo ganha o selo","all",
-  novos.map(it=>tile({k:"lib",id:it.id,kind:it.k,a:it.m,nw:true,eb:`Módulo ${it.m} · ${KINDS[it.k]}`,t:it.t.replace(/^(Apostila|Podcast|Resumo do)\s*:?\s*/,""),b:it.t,s:it.s})).join("")+
-  extNovos.map((e,i)=>tile({k:"ext",id:e.id,kind:"extra",href:e.u||"",a:[3,6,5,8][i%4],nw:true,eb:e.c,t:e.t,b:e.t,s:e.s})).join("")]);
- const pod=[];MODS.forEach(m=>LIB[m.n].forEach((it,i)=>{if(it[0]==="audio")pod.push({...libIt(m.n,i),lock:stateOf(m.n)==="locked"})}));
+  novos.join("")+extNovos.map((e,i)=>tile({k:"ext",id:e.id,kind:e.img?"resenha":"extra",img:e.img,href:e.u||"",a:[3,6,5,8][i%4],nw:true,eb:e.c,t:e.t,b:e.t,s:e.s})).join("")]);
  R.push(["podcasts","Podcasts pro caminho","Ouça no ônibus, no carro ou antes de abrir a loja","audio",
-  [tile({k:"passo",id:"audio",kind:"audio",photo:true,eb:"Ep. 1 · Módulo 1",t:"Cultura OH!",b:"Podcast: Cultura da OH!",s:S.steps.audio?"✓ Ouvido · cerca de 20 min":"Cerca de 20 min",p:S.steps.audio?100:null,lock:stepState(3)==="lock"})].concat(
-  pod.filter(p=>p.m>1).map((p,i)=>tile({k:"lib",id:p.id,kind:"audio",a:p.m,lock:p.lock,nw:!p.lock&&!S.seen.includes(p.id),eb:`Ep. ${i+2} · Módulo ${p.m}`,t:p.t.replace(/^Podcasts?\s*:?\s*/,""),b:p.t,s:p.lock?`Libera no Módulo ${p.m}`:p.s}))).join("")]);
- const pdf=[];MODS.forEach(m=>LIB[m.n].forEach((it,i)=>{if(it[0]!=="audio")pdf.push({...libIt(m.n,i),lock:stateOf(m.n)==="locked"})}));
- R.push(["apostilas","Apostilas e resumos","Leitura rápida pra revisar antes do atendimento","pdf",
-  pdf.map(p=>tile({k:"lib",id:p.id,kind:p.k,a:((p.m+p.k.length)%8)+1,lock:p.lock,nw:!p.lock&&p.m>1&&!S.seen.includes(p.id),eb:`Módulo ${p.m} · ${KINDS[p.k]}`,t:p.t.replace(/^(Apostila|Resumo do)\s*:?\s*/,""),b:p.t,s:p.lock?`Libera no Módulo ${p.m}`:p.s})).join("")]);
- R.push(["extras-row","Pra ir além","Vídeos, notícias e leituras que o time OH! separou","extra",
-  EXT.map((e,i)=>tile({k:"ext",id:e.id,kind:"extra",href:e.u||"",a:[3,6,5,8,7,4][i%6],nw:e.nw&&!S.seen.includes(e.id),eb:e.c,t:e.t,b:e.t,s:e.s})).join("")]);
+  MODS.flatMap(m=>MATS[m.n].map((x,i)=>x.au?mt(m.n,i+1,{eb:`Podcast · Módulo ${m.n}`}):"")).join("")]);
+ R.push(["apostilas","Todos os materiais","Leitura, podcast e treino de balcão, um depois do outro","pdf",
+  MODS.flatMap(m=>MATS[m.n].map((_,i)=>mt(m.n,i+1))).join("")]);
+ R.push(["extras-row","Pra ir além","Resenhas de livros, vídeos e notícias que o time OH! separou","extra",
+  EXT.map((e,i)=>tile({k:"ext",id:e.id,kind:e.img?"resenha":"extra",img:e.img,href:e.u||"",a:[3,6,5,8,7,4][i%6],nw:e.nw&&!S.seen.includes(e.id),eb:e.c,t:e.t,b:e.t,s:e.s})).join("")]);
 
  $("#rows").innerHTML=R.map(([id,h,tag,f,inner])=>`<section class="row" id="row-${id}" data-f="${f}" aria-label="${h}">
   <div class="row-h gut"><h2>${h}</h2>${tag?`<span class="tag">${tag}</span>`:""}</div>
@@ -803,116 +836,62 @@ function renderTrail(){
  document.querySelectorAll("#rows .tile").forEach(b=>b.addEventListener("click",ev=>{
   if(b.classList.contains("locked")){ev.preventDefault();b.animate([{transform:"translateX(0)"},{transform:"translateX(-6px)"},{transform:"translateX(6px)"},{transform:"translateX(0)"}],{duration:300});toast("Conclua o módulo anterior para liberar este conteúdo.");return}
   const k=b.dataset.k,id=b.dataset.id;
-  if(k==="passo"){abrirPasso(1,id);return}
-  if(k==="lib"){markSeen(id);registrar("abriu",{modulo:+id.slice(1).split("-")[0],material:id});toast("Este material entra no portal na próxima fase. Ele já está na sua Biblioteca.");setTimeout(renderTrail,400);return}
+  if(k==="mat"){const[n,m]=id.slice(1).split("-").map(Number);abrirMat(n,m);return}
   if(k==="ext"){const e=EXT.find(x=>x.id===id);markSeen(id);registrar("link_extra",{material:id,dados:{titulo:e.t}});if(!e.u){ev.preventDefault();toast("Pergunte ao cliente: o que você NÃO gosta no seu óculos atual?")}setTimeout(renderTrail,400)}}));
 }
 function filtrarHome(){document.querySelectorAll("#rows .row").forEach(r=>{const f=r.dataset.f;r.hidden=!(homeF==="all"||f==="all"||f===homeF)})}
 document.querySelectorAll("#homeChips button").forEach(b=>b.onclick=()=>{document.querySelectorAll("#homeChips button").forEach(x=>x.setAttribute("aria-pressed",x===b));homeF=b.dataset.f;filtrarHome()});
 function irTrilha(n){view("seller");homeF="all";document.querySelectorAll("#homeChips button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.f==="all"));filtrarHome();
  const r=$("#row-trilha");if(!r)return;r.scrollIntoView({behavior:"smooth",block:"center"});const p=r.querySelector(`.poster[data-n="${n||1}"]`);if(p)setTimeout(()=>p.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"}),350)}
-// Abre o Módulo 1 já no passo pedido (se ele estiver liberado).
-function abrirPasso(n,id){openMod(n);if(n!==1||stateOf(1)==="locked")return;const i=STEPS.findIndex(x=>x.id===id);
- if(i>=0&&stepState(i)!=="lock")setTimeout(()=>{const b=$("#st-"+id+" > button");if(b&&!b.parentElement.classList.contains("expanded"))b.click()},450)}
+// Abre um material dentro do portal, em tela cheia, contando o tempo para o admin.
+let VIEW=null;
+function abrirMat(n,k){const s=matState(n,k);
+ if(s==="lock"){toast(stateOf(n)==="locked"?`Conclua o Módulo ${n-1} para liberar este.`:"Conclua o material anterior primeiro.");return}
+ const x=MATS[n][k-1];VIEW={n,k};markSeen(`M${n}-${k}`);abrirMaterial(n,"mat"+k);
+ $("#vEb").textContent=`Módulo ${n} · Material ${k}`;$("#vT").textContent=x.t;pintaXp();
+ $("#vFrame").src=`materiais/m${n}/material-${k}.html`;$("#viewer").hidden=false;document.body.style.overflow="hidden"}
+function pintaXp(){if(!VIEW)return;const d=matDone(VIEW.n,VIEW.k),e=$("#vXp");e.textContent=d?"✓ Concluído":`+${XP_MAT} XP ao concluir`;e.classList.toggle("ok",d)}
+function fecharMat(){if(!VIEW)return;fecharMaterial();VIEW=null;$("#viewer").hidden=true;$("#vFrame").src="about:blank";document.body.style.overflow="";
+ if($("#modSheet").classList.contains("show"))renderMod();renderTrail();renderXP();if(!$("#library").hidden)renderLib()}
+$("#closeMat").onclick=fecharMat;
+addEventListener("keydown",e=>{if(e.key==="Escape"&&VIEW)fecharMat()});
 
 function openMod(n,b){const st=stateOf(n);
  if(st==="locked"){if(b){b.classList.remove("shake");void b.offsetWidth;b.classList.add("shake")}toast(`Conclua o Módulo ${n-1} para liberar este.`);return}
- if(n!==1){toast(`O Módulo ${n} está liberado! O conteúdo dele entra no portal na próxima fase. Os materiais já estão na Biblioteca.`);return}
- renderSteps();$("#modSheet").classList.add("show");$("#modSheet").scrollTop=0}
+ MOD=n;renderMod();$("#modSheet").classList.add("show");$("#modSheet").scrollTop=0}
+let MOD=1;
+function renderMod(){const n=MOD,m=MODS[n-1];
+ $("#mhArt").innerHTML=n===1?'<div class="art a1"><div class="art photo photo-side"></div></div>':art(n);
+ $("#mhEb").textContent=`Etapa ${n>4?2:1} · Módulo ${n}`;$("#mhT").textContent=m.t;$("#mhS").textContent=m.s+".";
+ $("#modSheet").setAttribute("aria-label",`Módulo ${n}`);
+ const W=$("#steps");W.innerHTML="";
+ MATS[n].forEach((x,i)=>{const k=i+1,s=matState(n,k);const c=document.createElement("article");c.className=`step ${s}`;
+  c.innerHTML=`<button type="button"><span class="ico">${s==="done"?"✓":s==="lock"?"🔒":k}</span><span class="st"><b>${x.t}</b><small>${s==="lock"?"Conclua o material anterior":x.s}</small></span><span class="xp">${s==="done"?"Concluído":"+"+XP_MAT+" XP"}</span><span class="go" aria-hidden="true">›</span></button>`;
+  c.querySelector("button").onclick=()=>abrirMat(n,k);W.appendChild(c)});
+ const d=MATS[n].filter((_,i)=>matDone(n,i+1)).length;$("#mtxt").textContent=`${d} de ${MATS[n].length}`;
+ requestAnimationFrame(()=>$("#mfill").style.width=(d/MATS[n].length*100)+"%")}
 $("#closeMod").onclick=()=>{fecharMaterial();$("#modSheet").classList.remove("show");renderTrail();renderXP()};
 $("#dockGo").onclick=()=>{const nx=nextModule();if(!nx){view("library");return}view("seller");openMod(nx.n)};
 
-/* ---------- Módulo 1 ---------- */
-const STEPS=[
- {id:"abertura",t:"Abertura: o DNA OH!",s:"Leitura de 2 min",xp:0},
- {id:"a11",t:"Aula 1.1: Combate ao Preconceito",s:"Vire os 3 cards",xp:50},
- {id:"a12",t:"Aula 1.2: Autoimagem e Mentalidade",s:"Monte sua rotina",xp:50},
- {id:"audio",t:"Podcast do módulo",s:"Ouça até o fim",xp:0},
- {id:"quiz",t:"Quiz final",s:"Acerte 4 de 5",xp:100}];
-const QUIZ=[
- {q:"Como o vendedor OH! se apresenta ao cliente?",o:["Como quem tem a promoção do dia","Como consultor que resolve um problema","Como alguém que só tira dúvidas"],a:1},
- {q:"O que é ter postura de dono?",o:["Cuidar da loja e do cliente como se o negócio fosse seu","Mandar nos colegas","Só atender cliente que vai comprar"],a:0},
- {q:"Semana fraca, loja vazia. O que mostra disciplina e rotina?",o:["Esperar o movimento voltar","Mandar mensagem para clientes perguntando da adaptação","Arrumar só a vitrine"],a:1},
- {q:"Por que o entusiasmo precisa ser real?",o:["Porque o cliente percebe energia forçada","Porque o chefe pede","Porque vende mais rápido"],a:0},
- {q:"Qual é a nossa cultura em uma frase?",o:["Vender o máximo possível","A satisfação do cliente","Ter o menor preço"],a:1}];
-let quizAns={};
-function stepState(i){const id=STEPS[i].id;if(S.steps[id])return"done";if(i===0||S.steps[STEPS[i-1].id])return"open";return"lock"}
-function renderSteps(){const W=$("#steps");W.innerHTML="";
- STEPS.forEach((st,i)=>{const s=stepState(i);const c=document.createElement("article");c.className=`step ${s}`;c.id="st-"+st.id;
-  c.innerHTML=`<button aria-expanded="false"><span class="ico">${s==="done"?"✓":s==="lock"?"🔒":i+1}</span><span class="st"><b>${st.t}</b><small>${s==="lock"?"Conclua o passo anterior":st.s}</small></span>${st.xp?`<span class="xp">+${st.xp} XP</span>`:""}</button><div class="body"></div>`;
-  c.querySelector("button").onclick=()=>{if(s==="lock"){toast("Conclua o passo anterior primeiro.");return}
-   const open=!c.classList.contains("expanded");document.querySelectorAll(".step").forEach(x=>x.classList.remove("expanded"));
-   if(open)abrirMaterial(1,st.id);else fecharMaterial();
-   if(open){c.classList.add("expanded");fill(st.id,c.querySelector(".body"));c.querySelector("button").setAttribute("aria-expanded","true");setTimeout(()=>c.scrollIntoView({behavior:"smooth",block:"start"}),60)}};
-  W.appendChild(c)});
- const n=STEPS.filter(x=>S.steps[x.id]).length;$("#mtxt").textContent=`${n} de 5`;
- requestAnimationFrame(()=>$("#mfill").style.width=(n/5*100)+"%")}
-function completeStep(id,nota){if(S.steps[id])return;const st=STEPS.find(x=>x.id===id);S.steps[id]=true;S.xp+=st.xp;
- salvarPasso({modulo:1,passo:id,xp:st.xp,nota:nota??null});
- if(st.xp)toast(`+${st.xp} XP! ${st.t.split(":")[0]} concluída.`);renderXP();
- if(id==="quiz"){S.done.includes(1)||S.done.push(1);setTimeout(celebrate,350)}
- renderSteps();const nx=STEPS[STEPS.indexOf(st)+1];if(nx)setTimeout(()=>$("#st-"+nx.id+" > button").click(),400)}
-
-function fill(id,el){
- if(id==="abertura"){el.innerHTML=`
-  <p>Cultura é o conjunto de hábitos, crenças, valores e atitudes que todo mundo aqui compartilha. É o DNA da marca: define quem somos e como fazemos as coisas por aqui.</p>
-  <p>Se a OH! tivesse vida própria, o que ela falaria? Como agiria? A resposta é simples: nossa cultura é <strong>a satisfação do cliente</strong>. Além dos óculos, ele leva nossa alegria consigo.</p>
-  <div class="quote">“Que você, cliente, possa voltar pra casa melhor e mais feliz do que antes de entrar na nossa loja.”</div>
-  <button class="cta">Li e quero começar</button>`;el.querySelector(".cta").onclick=()=>completeStep("abertura")}
- if(id==="a11"){const cards=[
-   ["Profissão Transformadora","Toque para virar","Nada acontece no mundo sem uma venda. Na ótica você devolve a visão e entrega autoestima. Seus óculos não corrigem só a visão… corrigem a autoestima!"],
-   ["Orgulho de Ser Vendedor","Toque para virar","As pessoas odeiam “vendedores”, mas amam bater papo e receber cuidado. <strong>SEJA A SOLUÇÃO, E NÃO MAIS UM ORÇAMENTO!</strong>"],
-   ["Postura de Dono","Toque para virar","Vitrine torta? Arruma. Cliente esperando? Recebe. Venda que “o colega resolve depois”? Não existe. O cliente não vê a empresa, ele vê VOCÊ."]];
-  el.innerHTML=`<p><strong>“Vendedor? Ah, aquele chato que empurra coisa.”</strong> Na OH! a pergunta é outra: você tem ORGULHO de vender?</p><p class="hint">Vire os 3 cards para liberar o próximo passo.</p><div class="flips">${cards.map((c,i)=>`<button class="flip" data-i="${i}" aria-label="${c[0]}"><span class="in"><span class="f"><b>${c[0]}</b><small>${c[1]}</small></span><span class="b"><strong>${c[0]}</strong><span>${c[2]}</span></span></span></button>`).join("")}</div>
-  <div class="case"><b>Caso de balcão</b>A Dona Marta chegou dizendo que “não enxergava mais o crochê”. Saiu com o multifocal certo e, uma semana depois, voltou com uma manta de presente pra loja.</div>
-  <button class="cta" disabled>Concluir aula</button>`;
-  const seen=new Set();el.querySelectorAll(".flip").forEach(f=>f.onclick=()=>{f.classList.toggle("on");registrar("clique_visual",{modulo:1,material:"a11",dados:{card:cards[f.dataset.i][0]}});seen.add(f.dataset.i);if(seen.size===3)el.querySelector(".cta").disabled=false});
-  el.querySelector(".cta").onclick=()=>completeStep("a11")}
- if(id==="a12"){el.innerHTML=`<p><strong>Você é feliz vendendo?</strong> O cliente sente. A venda começa na sua cabeça, antes do cliente passar pela porta. O vendedor campeão não tem sorte, tem rotina.</p>
-  <p class="hint">Marque a rotina que você vai seguir amanhã.</p>
-  <div class="routine">${["Abrir o dia olhando a meta e quantos atendimentos quero fazer","Cuidar do palco: vitrine, espelhos e mostruário","Mandar mensagem para um cliente que já comprou (RELACIONAMENTOOOO)","Fechar o dia: o que deu certo? O que faço melhor amanhã?"].map((t,i)=>`<label for="r${i}"><input type="checkbox" id="r${i}"> ${t}</label>`).join("")}</div>
-  <div class="case"><b>Caso de balcão</b>Semana fraca. Um vendedor reclama do movimento; o outro manda mensagem para 5 clientes. Dois voltam pra um cafezinho, um traz a filha pra fazer óculos. Quem teve “sorte”?</div>
-  <button class="cta" disabled>Concluir aula</button>`;
-  const boxes=[...el.querySelectorAll("input")];boxes.forEach(b=>b.onchange=()=>el.querySelector(".cta").disabled=!boxes.every(x=>x.checked));
-  el.querySelector(".cta").onclick=()=>completeStep("a12")}
- if(id==="audio"){el.innerHTML=`<div class="player" id="pl"><button class="pp" aria-label="Tocar">▶</button><div class="meta"><b>Cultura da OH!</b><small>Podcast OH! · cerca de 20 min</small><div class="wave">${Array.from({length:32},(_,i)=>`<i style="height:${30+Math.abs(Math.sin(i*1.7))*70}%"></i>`).join("")}</div></div><span class="pct">0%</span></div>
-  <div class="pl-ctrl" hidden><button data-j="-15" aria-label="Voltar 15 segundos">−15s</button><button data-j="15" aria-label="Avançar 15 segundos">+15s</button><span class="sp"></span><button data-r="1" aria-pressed="true">1x</button><button data-r="1.25" aria-pressed="false">1,25x</button><button data-r="1.5" aria-pressed="false">1,5x</button></div>
-  <p class="hint" id="plHint">Carregando o áudio…</p>`;
-  const pl=el.querySelector("#pl"),pp=pl.querySelector(".pp"),bars=[...pl.querySelectorAll(".wave i")],pc=pl.querySelector(".pct"),hint=el.querySelector("#plHint");
-  let marco=0;
-  const mostrar=p=>{pc.textContent=Math.round(p)+"%";bars.forEach((b,i)=>b.classList.toggle("on",i/bars.length*100<p));
-   const m=Math.floor(p/25)*25;if(m>marco){marco=m;registrar("audio",{modulo:1,material:"audio",dados:{pct:m}})}};
-  const fim=()=>{pl.classList.remove("playing");pp.textContent="✓";completeStep("audio")};
-  (sb?sb.storage.from("materiais").createSignedUrl("m1/podcast-cultura-oh.mp3",6*3600):Promise.resolve({})).then(({data})=>{
-   if(data?.signedUrl){
-    // Áudio de verdade, guardado na pasta privada do Supabase; retoma de onde parou.
-    const au=new Audio(data.signedUrl);au.preload="metadata";const PK=KEY+"-pos-m1";
-    hint.textContent="Ouça até o fim para liberar o quiz. Dá pra pausar e continuar depois.";el.querySelector(".pl-ctrl").hidden=false;
-    au.addEventListener("loadedmetadata",()=>{const t=+localStorage.getItem(PK)||0;if(t&&t<au.duration-5)au.currentTime=t});
-    au.addEventListener("timeupdate",()=>{if(au.duration){mostrar(au.currentTime/au.duration*100);try{localStorage.setItem(PK,au.currentTime)}catch(e){}}});
-    au.addEventListener("play",()=>{pl.classList.add("playing");pp.textContent="❚❚";pp.setAttribute("aria-label","Pausar")});
-    au.addEventListener("pause",()=>{pl.classList.remove("playing");if(!au.ended){pp.textContent="▶";pp.setAttribute("aria-label","Tocar")}});
-    au.addEventListener("ended",()=>{try{localStorage.removeItem(PK)}catch(e){}mostrar(100);fim()});
-    pp.onclick=()=>{if(au.paused){au.play().catch(()=>toast("Não deu pra tocar o áudio. Confira sua internet."));registrar("play_audio",{modulo:1,material:"audio"})}else au.pause()};
-    el.querySelectorAll("[data-j]").forEach(b=>b.onclick=()=>{au.currentTime=Math.max(0,Math.min(au.duration||0,au.currentTime+ +b.dataset.j))});
-    el.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{au.playbackRate=+b.dataset.r;el.querySelectorAll("[data-r]").forEach(x=>x.setAttribute("aria-pressed",x===b))});
-    new MutationObserver((_,o)=>{if(!el.isConnected||!el.closest(".expanded")){au.pause();o.disconnect()}}).observe($("#steps"),{subtree:true,childList:true,attributes:true,attributeFilter:["class"]});
-    return}
-   // Enquanto o MP3 não estiver no Supabase, o áudio é simulado em 8 segundos.
-   hint.textContent="O áudio deste módulo ainda não foi enviado. Por enquanto, a reprodução é simulada.";let p=0,t=null;
-   pp.onclick=()=>{if(t){clearInterval(t);t=null;pl.classList.remove("playing");pp.textContent="▶";return}
-    pl.classList.add("playing");pp.textContent="❚❚";registrar("play_audio",{modulo:1,material:"audio"});
-    t=setInterval(()=>{p=Math.min(100,p+1.25);mostrar(p);if(p>=100){clearInterval(t);t=null;fim()}},100)}})}
- if(id==="quiz"){quizAns={};el.innerHTML=QUIZ.map((q,i)=>`<div class="q"><p>${i+1}. ${q.q}</p><div class="opts">${q.o.map((o,j)=>`<button class="opt" data-q="${i}" data-o="${j}">${o}</button>`).join("")}</div></div>`).join("")+`<button class="cta" id="send" disabled>Enviar respostas</button><div id="res"></div>`;
-  el.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{const q=b.dataset.q;el.querySelectorAll(`.opt[data-q="${q}"]`).forEach(x=>x.classList.remove("sel","right","wrong"));b.classList.add("sel");quizAns[q]=+b.dataset.o;el.querySelector("#send").disabled=Object.keys(quizAns).length<5});
-  el.querySelector("#send").onclick=()=>{let ok=0;QUIZ.forEach((q,i)=>{el.querySelectorAll(`.opt[data-q="${i}"]`).forEach(x=>{x.classList.remove("sel");if(+x.dataset.o===q.a)x.classList.add("right");else if(quizAns[i]===+x.dataset.o)x.classList.add("wrong")});if(quizAns[i]===q.a)ok++});
-   registrar("quiz",{modulo:1,material:"quiz",dados:{acertos:ok}});
-   const r=el.querySelector("#res");if(ok>=4){r.innerHTML=`<div class="result ok">${ok} de 5! Módulo concluído.</div>`;completeStep("quiz",ok)}else{r.innerHTML=`<div class="result no">${ok} de 5. Precisa de 4 para passar. Revise as respostas em verde e tente de novo.</div>`;el.querySelector("#send").textContent="Tentar de novo";el.querySelector("#send").onclick=()=>fill("quiz",el)}}}
-}
+/* ---------- progresso dos materiais ---------- */
+// Cada material concluído vale XP; concluir todos os materiais do módulo dá o bônus e libera o próximo.
+function concluirMaterial(n,k){const id=n+"-"+k;if(S.mats[id])return;S.mats[id]=true;S.xp+=XP_MAT;
+ salvarPasso({modulo:n,passo:"mat"+k,xp:XP_MAT});toast(`+${XP_MAT} XP! Material ${k} concluído.`);renderXP();pintaXp();
+ if(MATS[n].every((_,i)=>matDone(n,i+1))&&!S.done.includes(n)){S.done.push(n);S.xp+=XP_MOD;salvarPasso({modulo:n,passo:"concluido",xp:XP_MOD});setTimeout(()=>celebrate(n),900)}
+ else if(k<MATS[n].length)setTimeout(()=>toast(`Material ${k+1} liberado: ${MATS[n][k].t}`),2800)}
+// O que as páginas dos materiais (materiais/ponte.js) usam do portal.
+window.OHPonte={
+ get uid(){return ME?ME.id:"anon"},
+ audioUrl:p=>sb?sb.storage.from("materiais").createSignedUrl(p,6*3600).then(r=>r.data?.signedUrl||null,()=>null):Promise.resolve(null),
+ feito:matDone,
+ evento:(tipo,n,k,dados)=>registrar(tipo,{modulo:n,material:"mat"+k,dados}),
+ concluir:concluirMaterial};
 
 /* ---------- conquista ---------- */
-function celebrate(){$("#win").hidden=false;$("#winXp").textContent="0";animateNum($("#winXp"),200);confetti()}
-$("#winOk").onclick=()=>{$("#win").hidden=true;renderDots();toast("Novos materiais na Biblioteca!");$("#modSheet").classList.remove("show");slide=0;renderTrail();renderXP();setTimeout(()=>irTrilha(2),500)};
+function celebrate(n){$("#winH").textContent=MEDAL[n];
+ $("#winTxt").textContent=n<8?`Módulo ${n+1}: ${MODS[n].t} foi liberado na sua trilha.`:"Você concluiu os 8 módulos da Escola de Vendas OH!";
+ $("#win").dataset.n=n;$("#win").hidden=false;$("#winXp").textContent="0";animateNum($("#winXp"),MATS[n].length*XP_MAT+XP_MOD);confetti()}
+$("#winOk").onclick=()=>{const n=+$("#win").dataset.n||1;$("#win").hidden=true;fecharMat();renderDots();$("#modSheet").classList.remove("show");slide=0;renderTrail();renderXP();setTimeout(()=>irTrilha(Math.min(8,n+1)),500)};
 function confetti(){if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;const c=$("#confetti"),x=c.getContext("2d");c.width=innerWidth;c.height=innerHeight;
  const cols=["#e8792b","#2f6b4f","#b5573a","#d9b99b","#f6b27a"];const P=Array.from({length:140},()=>({x:innerWidth/2,y:innerHeight/2.4,vx:(Math.random()-.5)*14,vy:Math.random()*-14-4,r:Math.random()*6+4,c:cols[Math.random()*5|0],a:Math.random()*6}));let f=0;
  (function loop(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.a+=.2;x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.c;x.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);x.restore()});if(++f<160)requestAnimationFrame(loop);else x.clearRect(0,0,c.width,c.height)})()}
@@ -934,20 +913,14 @@ async function renderPeople(){
  const semana=Date.now()-7*864e5;
  const dados=equipe.map((p,i)=>{
   const meu=pr.data.filter(r=>r.usuario_id===p.id),evs=ev.data.filter(e=>e.usuario_id===p.id);
-  const done=new Set(meu.filter(r=>r.passo==="quiz").map(r=>r.modulo));
+  const done=new Set(meu.filter(r=>r.passo==="quiz"||r.passo==="concluido").map(r=>r.modulo));
   const xp=meu.reduce((a,r)=>a+r.xp,0);
-  const tempo=m=>evs.filter(e=>e.tipo==="tempo"&&e.modulo===1&&e.material===m).reduce((a,e)=>a+e.segundos,0);
-  const cliques=m=>evs.filter(e=>e.tipo==="clique_visual"&&e.material===m).length;
-  const audio=Math.max(-1,...evs.filter(e=>e.tipo==="audio").map(e=>e.dados?.pct||0));
-  const deuPlay=evs.some(e=>e.tipo==="play_audio");
-  const quiz=meu.find(r=>r.modulo===1&&r.passo==="quiz");const tent=evs.filter(e=>e.tipo==="quiz"&&e.modulo===1);
-  const rows=STEPS.map(st=>{
-   const fez=meu.some(r=>r.modulo===1&&r.passo===st.id);
-   let au="—",qz="—";
-   if(st.id==="audio")au=audio>=0?audio+"%":deuPlay?"0%":"—";
-   if(st.id==="quiz")qz=quiz?`${quiz.nota??"✓"}/5`:tent.length?`${tent[0].dados?.acertos??0}/5 (${tent.length}x)`:"—";
-   const c=cliques(st.id);
-   return[st.t.split(":")[0]+(fez?" ✓":""),minutos(tempo(st.id))+(c?` · ${c} cliques`:""),au,qz]});
+  const doMat=(tipo,n,m)=>evs.filter(e=>e.tipo===tipo&&e.modulo===n&&e.material===m);
+  const rows=[];MODS.forEach(md=>MATS[md.n].forEach((x,i)=>{const m="mat"+(i+1);
+   const fez=meu.some(r=>r.modulo===md.n&&r.passo===m),seg=doMat("tempo",md.n,m).reduce((a,e)=>a+e.segundos,0);
+   if(!fez&&!seg&&md.n>Math.min(8,done.size+1))return;
+   const c=doMat("clique_visual",md.n,m).length,au=Math.max(-1,...doMat("audio",md.n,m).map(e=>e.dados?.pct||0));
+   rows.push([`M${md.n}·${i+1} ${x.t}`,minutos(seg)+(c?` · ${c} cliques`:""),!x.au?"—":au>=0?au+"%":doMat("play_audio",md.n,m).length?"0%":"—",fez?"✓ Concluído":seg?"Em andamento":"—"])}));
   const semanaSeg=evs.filter(e=>e.tipo==="tempo"&&new Date(e.criado_em)>semana).reduce((a,e)=>a+e.segundos,0);
   return{n:p.nome,l:p.loja||"Loja não informada",c:AV[i%AV.length],m:Math.min(8,done.size+1),done:done.size,xp,rows,semanaSeg,ult:evs[0]?.criado_em}});
  $("#kpiN").textContent=equipe.length;
@@ -956,47 +929,41 @@ async function renderPeople(){
  $("#admStamp").textContent="Atualizado "+new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
  if(!dados.length){box.innerHTML='<p class="demo-note">Nenhum vendedor cadastrado ainda. Cadastre a equipe no Supabase (Authentication → Users).</p>';return}
  box.innerHTML=dados.map(p=>`<article class="person"><button aria-expanded="false"><span class="av" style="background:${p.c}">${esc(p.n[0]||"?")}</span><span class="who"><b>${esc(p.n)}</b><small>${esc(p.l)} · Módulo ${p.m} · ${p.xp} XP · ${quando(p.ult)}</small></span><span class="mini"><i style="width:${p.done/8*100+6}%"></i></span></button>
- <div class="detail"><div class="eyebrow" style="margin:4px 0 6px">Módulo 1, passo a passo</div><div class="tbl"><table><thead><tr><th>Material</th><th>Tempo</th><th>Áudio ouvido</th><th>Quiz</th></tr></thead><tbody>${p.rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]==="—"?"—":`<span class="chip ${r[2]==="100%"?"y":"n"}">${r[2]}</span>`}</td><td>${r[3]}</td></tr>`).join("")}</tbody></table></div></div></article>`).join("");
+ <div class="detail"><div class="eyebrow" style="margin:4px 0 6px">Material por material</div><div class="tbl"><table><thead><tr><th>Material</th><th>Tempo</th><th>Podcast ouvido</th><th>Situação</th></tr></thead><tbody>${p.rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]==="—"?"—":`<span class="chip ${r[2]==="100%"?"y":"n"}">${r[2]}</span>`}</td><td>${r[3]}</td></tr>`).join("")}</tbody></table></div></div></article>`).join("");
  document.querySelectorAll(".person>button").forEach(b=>b.onclick=()=>{const a=b.parentElement;a.classList.toggle("expanded");b.setAttribute("aria-expanded",a.classList.contains("expanded"))})}
 $("#admRefresh").onclick=renderPeople;
 
 /* ---------- Biblioteca ---------- */
-const LIB={
- 1:[["resumo","Resumo do Módulo 1","Leitura de 3 min"],["pdf","Apostila: Cultura OH!","PDF · 2 páginas"],["audio","Podcast: Comunicação Interpessoal","MP3 · cerca de 7 min"]],
- 2:[["resumo","Resumo do Módulo 2","Leitura de 3 min"],["pdf","Apostila: Linguagem Corporal e Presença","PDF · 12 páginas"],["audio","Podcast: Linguagem Corporal e Presença","MP3 · cerca de 5 min"]],
- 3:[["pdf","Apostila: SPIN Selling","PDF · 10 páginas"],["pdf","Apostila: Rapport e Psicologia da Comunicação","PDF · 10 páginas"],["audio","Podcast: SPIN Selling","MP3"]],
- 4:[["pdf","Apostila: O Poder da Autoimagem","PDF · 10 páginas"],["pdf","Apostila: Psicologia das Vendas","PDF · 4 páginas"],["audio","Podcast: O poder da autoimagem","MP3"]],
- 5:[["pdf","OH! $100M Offers, módulos 1 a 4","4 PDFs"],["audio","Podcasts $100M Offers","4 MP3"]],
- 6:[["pdf","Apostila: Gestão de Objeção e Método EVA","PDF"],["pdf","Apostila: Persuasão Ética e Linguagem Positiva","PDF"],["audio","Podcast: Persuasão Ética","MP3"]],
- 7:[["pdf","Apostila: Fechamento com Charme","PDF"],["audio","Podcast: Fechamento com Charme","MP3"]],
- 8:[["pdf","Apostila: A Entrega","PDF"],["pdf","Método HEARD da Disney","PDF"],["resumo","Rapidinha OH!: Follow Up","Leitura de 2 min"]]};
-const TAG={pdf:"PDF",audio:"MP3",resumo:"TXT"};
-S.seen=S.seen||[];S.unlockedAt=S.unlockedAt||{1:0};
+S.seen=S.seen||[];
 let libF="all",extF="all";
-function libNewIds(){const out=[];MODS.forEach(m=>{if(stateOf(m.n)!=="locked"&&m.n>1)LIB[m.n].forEach((it,i)=>{const id=`L${m.n}-${i}`;if(!S.seen.includes(id))out.push(id)})});return out}
+function libNewIds(){const out=[];MODS.forEach(m=>MATS[m.n].forEach((_,i)=>{if(ehNovo(m.n,i+1))out.push(`M${m.n}-${i+1}`)}));return out}
 function renderLib(){const L=$("#libList");L.innerHTML="";
  MODS.forEach(m=>{const st=stateOf(m.n);const box=document.createElement("section");box.className=`libmod${m.n>4?" e2":""}${st==="locked"?" locked":""}`;
   if(st==="locked"){box.innerHTML=`<header><span class="n">🔒</span><b>Módulo ${m.n}: ${m.t}</b></header><p>Libera quando você concluir o Módulo ${m.n-1}.</p>`;L.appendChild(box);return}
-  const items=LIB[m.n].map((it,i)=>({id:`L${m.n}-${i}`,k:it[0],t:it[1],s:it[2]})).filter(it=>libF==="all"||it.k===libF);
+  const items=MATS[m.n].map((x,i)=>({k:i+1,x,s:matState(m.n,i+1)})).filter(it=>libF==="all"||(libF==="audio")===it.x.au);
   if(!items.length)return;
-  box.innerHTML=`<header><span class="n">${m.n}</span><b>Módulo ${m.n}: ${m.t}</b></header>`+items.map(it=>{const nw=m.n>1&&!S.seen.includes(it.id);
-   return `<button class="item${nw?" is-new":""}" data-id="${it.id}"><span class="ti ${it.k}">${TAG[it.k]}</span><span class="tx"><b>${it.t}${nw?'<span class="new">Novo</span>':""}</b><small>${it.s}</small></span></button>`}).join("");
+  box.innerHTML=`<header><span class="n">${m.n}</span><b>Módulo ${m.n}: ${m.t}</b></header>`+items.map(it=>{const nw=ehNovo(m.n,it.k);
+   return `<button class="item${nw?" is-new":""}${it.s==="lock"?" lk":""}" data-n="${m.n}" data-k="${it.k}"><span class="ti ${it.x.au?"audio":"pdf"}">${it.s==="done"?"✓":it.s==="lock"?"🔒":it.x.au?"MP3":"LER"}</span><span class="tx"><b>${it.x.t}${nw?'<span class="new">Novo</span>':""}</b><small>${it.s==="lock"?"Conclua o material anterior":it.x.s}</small></span></button>`}).join("");
   L.appendChild(box)});
- L.querySelectorAll(".item").forEach(b=>b.onclick=()=>{markSeen(b.dataset.id);registrar("abriu",{modulo:+b.dataset.id.slice(1).split("-")[0],material:b.dataset.id});b.classList.remove("is-new");b.querySelector(".new")?.remove();toast("No portal, o material abre aqui dentro e o tempo de leitura vai pro admin.")})}
+ L.querySelectorAll(".item").forEach(b=>b.onclick=()=>abrirMat(+b.dataset.n,+b.dataset.k))}
 
 /* ---------- Extras ---------- */
 const EXT=[
- {id:"E1",c:"Vídeo",t:"SPIN Selling na prática",s:"Vídeos no YouTube sobre o método de Neil Rackham",u:"https://www.youtube.com/results?search_query=spin+selling+neil+rackham",cov:"var(--terra)",lab:"▶ YouTube",nw:true},
+ {id:"R1",c:"Resenha",t:"SPIN Selling",s:"Neil Rackham · quem faz as perguntas certas não precisa empurrar (Módulo 3)",u:"extras/resenhas/spin-selling.pdf",img:"extras/resenhas/spin-selling.webp",lab:"Resenha",nw:true},
+ {id:"R2",c:"Resenha",t:"Como Fazer Amigos e Influenciar Pessoas",s:"Dale Carnegie · o clássico da conexão com o cliente",u:"extras/resenhas/como-fazer-amigos.pdf",img:"extras/resenhas/como-fazer-amigos.webp",lab:"Resenha",nw:true},
+ {id:"R3",c:"Resenha",t:"Ofertas de US$ 100 Milhões",s:"Alex Hormozi · ofertas que o cliente não consegue recusar (Módulo 5)",u:"extras/resenhas/ofertas-100-milhoes.pdf",img:"extras/resenhas/ofertas-100-milhoes.webp",lab:"Resenha",nw:true},
+ {id:"R4",c:"Resenha",t:"Negocie Como se Sua Vida Dependesse Disso",s:"Chris Voss · as técnicas FBI do Módulo 6",u:"extras/resenhas/negocie-como-se-sua-vida-dependesse-disso.pdf",img:"extras/resenhas/negocie-como-se-sua-vida-dependesse-disso.webp",lab:"Resenha",nw:true},
+ {id:"R5",c:"Resenha",t:"O Jeito Disney de Encantar os Clientes",s:"Disney Institute · a base do Método HEARD do Módulo 8",u:"extras/resenhas/o-jeito-disney.pdf",img:"extras/resenhas/o-jeito-disney.webp",lab:"Resenha",nw:true},
+ {id:"E1",c:"Vídeo",t:"SPIN Selling na prática",s:"Vídeos no YouTube sobre o método de Neil Rackham",u:"https://www.youtube.com/results?search_query=spin+selling+neil+rackham",cov:"var(--terra)",lab:"▶ YouTube"},
  {id:"E2",c:"Notícia",t:"Mercado óptico em pauta",s:"Últimas notícias do setor óptico no Google Notícias",u:"https://news.google.com/search?q=mercado%20%C3%B3ptico&hl=pt-BR&gl=BR&ceid=BR:pt-419",cov:"var(--green)",lab:"Notícias",nw:true},
- {id:"E3",c:"Leitura",t:"Negocie como se sua vida dependesse disso",s:"Chris Voss, base das técnicas FBI do Módulo 6",u:"https://www.google.com/search?q=Negocie+como+se+sua+vida+dependesse+disso+Chris+Voss",cov:"var(--orange)",lab:"Livro"},
  {id:"E4",c:"Vídeo",t:"Alex Hormozi e as ofertas irresistíveis",s:"Vídeos legendados sobre $100M Offers",u:"https://www.youtube.com/results?search_query=alex+hormozi+ofertas+legendado",cov:"var(--terra)",lab:"▶ YouTube"},
- {id:"E5",c:"Dica",t:"Rapidinha: deixe o cliente FALAR",s:"5 perguntas pra usar amanhã no balcão",u:"",cov:"var(--nude)",lab:"Dica OH!"},
- {id:"E6",c:"Leitura",t:"O jeito Disney de encantar clientes",s:"Livro de apoio ao Método HEARD, Módulo 8",u:"https://www.google.com/search?q=O+jeito+Disney+de+encantar+os+clientes+livro",cov:"var(--orange)",lab:"Livro"}];
+ {id:"E5",c:"Dica",t:"Rapidinha: deixe o cliente FALAR",s:"5 perguntas pra usar amanhã no balcão",u:"",cov:"var(--nude)",lab:"Dica OH!"}
+];
 function extNewIds(){return EXT.filter(e=>e.nw&&!S.seen.includes(e.id)).map(e=>e.id)}
 function renderExt(){const L=$("#extList");L.innerHTML="";
  EXT.filter(e=>extF==="all"||e.c===extF).sort((a,b)=>(b.nw&&!S.seen.includes(b.id))-(a.nw&&!S.seen.includes(a.id))).forEach(e=>{const nw=e.nw&&!S.seen.includes(e.id);
   const el=document.createElement(e.u?"a":"button");el.className="link"+(nw?" is-new":"");if(e.u){el.href=e.u;el.target="_blank";el.rel="noopener"}else{el.style.border="0";el.style.textAlign="left";el.style.width="100%"}
-  el.innerHTML=`<span class="cov" style="background:${e.cov}">${e.lab}</span><span class="tx"><span class="cat">${e.c}${nw?'<span class="new">Novo</span>':""}</span><b>${e.t}</b><small>${e.s}</small></span>`;
+  el.innerHTML=`<span class="cov${e.img?" book":""}" style="background:${e.img?`#222 url(${e.img}) center top/cover`:e.cov}">${e.img?"":e.lab}</span><span class="tx"><span class="cat">${e.c}${nw?'<span class="new">Novo</span>':""}</span><b>${e.t}</b><small>${e.s}</small></span>`;
   el.addEventListener("click",()=>{markSeen(e.id);registrar("link_extra",{material:e.id,dados:{titulo:e.t}});if(!e.u)toast("Pergunte ao cliente: o que você NÃO gosta no seu óculos atual?");setTimeout(renderExt,300)});L.appendChild(el)})}
 
 function markSeen(id){if(!S.seen.includes(id)){S.seen.push(id);save();renderDots()}}
@@ -1034,8 +1001,9 @@ async function entrar(user){
  if(perf.error||!perf.data||perf.data.ativo===false||prog.error){
   await sb.auth.signOut();showLogin("Seu acesso ainda não está liberado. Fale com o admin da sua loja.");return}
  ME=perf.data;KEY="ohacademy-"+ME.id;
- S={xp:0,done:[],steps:{},seen:loadSeen()};
- prog.data.forEach(r=>{S.xp+=r.xp;if(r.modulo===1)S.steps[r.passo]=true;if(r.passo==="quiz"&&!S.done.includes(r.modulo))S.done.push(r.modulo)});
+ S={xp:0,done:[],mats:{},seen:loadSeen()};
+ prog.data.forEach(r=>{S.xp+=r.xp;const k=/^mat(\d+)$/.exec(r.passo);if(k)S.mats[r.modulo+"-"+k[1]]=true;
+  if((r.passo==="quiz"||r.passo==="concluido")&&!S.done.includes(r.modulo))S.done.push(r.modulo)});
  const primeiro=(ME.nome||"").split(/[\s.]/)[0]||"";
  FIRST=primeiro?primeiro[0].toUpperCase()+primeiro.slice(1):"";
  $("#whoName").textContent=ME.nome;$("#whoLoja").textContent=ME.loja||"OH!";$("#whoAva").textContent=(ME.nome||"?")[0].toUpperCase();
@@ -1045,7 +1013,7 @@ async function entrar(user){
  let v0="seller";try{v0=VIEWS.includes(location.hash.slice(1))?location.hash.slice(1):(localStorage.getItem(KEY+"-view")||"seller")}catch(e){}view(v0);
  registrar("entrou");reenviar()}
 
-$("#logout").onclick=async()=>{fecharMaterial();await sb.auth.signOut();ME=null;
+$("#logout").onclick=async()=>{fecharMat();fecharMaterial();await sb.auth.signOut();ME=null;
  document.querySelector('.dock button[data-v="admin"]').hidden=true;showLogin()};
 
 (async function boot(){
