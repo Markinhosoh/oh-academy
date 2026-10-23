@@ -19,7 +19,8 @@ Site estático no GitHub Pages: Settings → Pages → Deploy from a branch → 
 ## Supabase
 
 - `supabase/schema.sql`: cria tabelas, regras de acesso e a pasta privada `materiais`. Rode no SQL Editor do Supabase.
-- Login: cada pessoa é cadastrada em Authentication → Users como `usuario@ohacademy.app`; no portal digita só `usuario`.
+- `supabase/cadastro.sql`: rode uma vez para o admin cadastrar a equipe pelo próprio portal (aba Admin → Acessos da equipe): cola a lista "Nome, Loja", o portal gera usuário e senha, cria os logins e copia as mensagens para o WhatsApp. Também troca senha e desativa acesso.
+- Login: cada pessoa vira `usuario@ohacademy.app`; no portal digita só `usuario`.
 - Admin: `update public.perfis set papel = 'admin' where ...` (ver o guia).
 - Podcasts: ficam na pasta privada Storage → `materiais`, com o mesmo nome usado na página do material:
   - `m1/podcast-cultura-oh.mp3`, `m1/podcast-psicologia-atendimento.mp3`, `m1/podcast-autoimagem-vendedor.mp3`
