@@ -982,9 +982,16 @@ async function renderAcessos(){
  if(error){box.innerHTML='<p>Falta um passo no Supabase para cadastrar pelo portal: abra o SQL Editor, cole o arquivo <b>supabase/cadastro.sql</b> e clique em Run. Depois toque em Atualizar.</p>';return}
  ACESSOS=data;
  if(!data.length){box.innerHTML="<p>Ninguém cadastrado ainda.</p>";return}
- box.innerHTML=`<div class="tbl"><table><thead><tr><th>Nome</th><th>Usuário</th><th>Último acesso</th><th></th></tr></thead><tbody>${data.map(a=>`<tr class="${a.ativo?"":"off"}" data-id="${a.id}"><td><b>${esc(a.nome)}</b><br><small style="color:var(--muted)">${esc(a.loja||"—")}${a.papel==="admin"?" · admin":""}${a.ativo?"":" · desativado"}</small></td><td>${esc(a.usuario)}</td><td>${a.ultimo_login?quando(a.ultimo_login):"nunca entrou"}</td><td>${a.papel==="admin"?"":`<div class="row-btns"><button class="mini-btn" data-a="senha" type="button">Nova senha</button><button class="mini-btn" data-a="ativo" type="button">${a.ativo?"Desativar":"Reativar"}</button></div>`}</td></tr>`).join("")}</tbody></table></div>`;
+ box.innerHTML=`<div class="tbl"><table><thead><tr><th>Nome</th><th>Usuário</th><th>Último acesso</th><th></th></tr></thead><tbody>${data.map(a=>`<tr class="${a.ativo?"":"off"}" data-id="${a.id}"><td><b>${esc(a.nome)}</b><br><small style="color:var(--muted)">${esc(a.loja||"—")}${a.papel==="admin"?" · admin":""}${a.ativo?"":" · desativado"}</small></td><td>${esc(a.usuario)}</td><td>${a.ultimo_login?quando(a.ultimo_login):"nunca entrou"}</td><td><div class="row-btns"><button class="mini-btn" data-a="editar" type="button">Editar</button>${a.papel==="admin"?"":`<button class="mini-btn" data-a="senha" type="button">Nova senha</button><button class="mini-btn" data-a="ativo" type="button">${a.ativo?"Desativar":"Reativar"}</button>`}</div></td></tr>`).join("")}</tbody></table></div>`;
  box.querySelectorAll("button[data-a]").forEach(b=>b.onclick=async()=>{const a=ACESSOS.find(x=>x.id===b.closest("tr").dataset.id);b.disabled=true;
-  if(b.dataset.a==="senha"){const senha=novaSenha();
+  if(b.dataset.a==="editar"){
+   const nome=prompt("Nome completo:",a.nome===a.usuario?"":a.nome);if(nome===null){b.disabled=false;return}
+   const loja=prompt("Loja:",a.loja||"");if(loja===null){b.disabled=false;return}
+   if(!nome.trim()){toast("O nome não pode ficar vazio.");b.disabled=false;return}
+   const r=await sb.from("perfis").update({nome:nome.trim(),loja:loja.trim()||null}).eq("id",a.id);
+   if(r.error){toast("Não deu certo: "+r.error.message);b.disabled=false;return}
+   toast("Dados atualizados.")}
+  else if(b.dataset.a==="senha"){const senha=novaSenha();
    if(!confirm(`Criar uma senha nova para ${a.nome}? A senha antiga deixa de funcionar.`)){b.disabled=false;return}
    const r=await sb.rpc("admin_trocar_senha",{p_id:a.id,p_senha:senha});
    if(r.error){toast("Não deu certo: "+r.error.message);b.disabled=false;return}
