@@ -1,15 +1,20 @@
 -- OH! academy: cadastro de vendedores pelo próprio portal (aba Admin → Acessos da equipe)
 -- Cole tudo no SQL Editor do Supabase e clique em Run, uma vez. Pode rodar de novo sem estragar nada.
 -- Depois disso o admin cria logins, troca senhas e desativa acessos sem abrir o Supabase.
+-- Primeiro acesso: o admin passa um código provisório e o vendedor cria a própria senha ao entrar.
 
--- Lista de acessos para o admin: nome, loja, usuário de login e último acesso
-create or replace function public.admin_acessos()
-returns table (id uuid, nome text, loja text, usuario text, papel text, ativo boolean, ultimo_login timestamptz)
+-- Marca quem ainda precisa criar a própria senha (no primeiro acesso ou depois de um código novo)
+alter table public.perfis add column if not exists trocar_senha boolean not null default false;
+
+-- Lista de acessos para o admin: nome, loja, usuário de login, último acesso e se falta criar a senha
+drop function if exists public.admin_acessos();
+create function public.admin_acessos()
+returns table (id uuid, nome text, loja text, usuario text, papel text, ativo boolean, ultimo_login timestamptz, trocar_senha boolean)
 language plpgsql stable security definer set search_path = public as $$
 begin
   if not public.eh_admin() then raise exception 'Só o admin pode ver os acessos.'; end if;
   return query
-    select p.id, p.nome, p.loja, split_part(u.email::text, '@', 1), p.papel, p.ativo, u.last_sign_in_at
+    select p.id, p.nome, p.loja, split_part(u.email::text, '@', 1), p.papel, p.ativo, u.last_sign_in_at, p.trocar_senha
     from public.perfis p join auth.users u on u.id = p.id
     order by p.ativo desc, p.nome;
 end;
@@ -49,14 +54,14 @@ begin
     jsonb_build_object('sub', v_id::text, 'email', v_email, 'email_verified', true),
     'email', now(), now(), now());
 
-  -- O gatilho ao_criar_usuario já cria o perfil; aqui garante nome e loja certinhos
-  insert into public.perfis (id, nome, loja) values (v_id, trim(p_nome), nullif(trim(p_loja), ''))
-  on conflict (id) do update set nome = excluded.nome, loja = excluded.loja;
+  -- O gatilho ao_criar_usuario já cria o perfil; aqui garante nome e loja e pede a senha no primeiro acesso
+  insert into public.perfis (id, nome, loja, trocar_senha) values (v_id, trim(p_nome), nullif(trim(p_loja), ''), true)
+  on conflict (id) do update set nome = excluded.nome, loja = excluded.loja, trocar_senha = true;
   return v_id;
 end;
 $$;
 
--- Troca a senha de alguém (quando o vendedor esquece)
+-- Gera um código novo para alguém (quando o vendedor esquece a senha); ele cria outra senha ao entrar
 create or replace function public.admin_trocar_senha(p_id uuid, p_senha text)
 returns void
 language plpgsql security definer set search_path = public as $$
@@ -66,13 +71,23 @@ begin
   update auth.users set encrypted_password = extensions.crypt(p_senha, extensions.gen_salt('bf')), updated_at = now()
   where id = p_id;
   if not found then raise exception 'Usuário não encontrado.'; end if;
+  update public.perfis set trocar_senha = true where id = p_id;
 end;
+$$;
+
+-- O próprio vendedor avisa que já criou a senha dele (chamado pelo portal logo depois de salvar a senha)
+create or replace function public.senha_criada()
+returns void
+language sql security definer set search_path = public as $$
+  update public.perfis set trocar_senha = false where id = auth.uid();
 $$;
 
 -- Só quem está logado chama; dentro de cada função, só o admin passa
 revoke all on function public.admin_acessos() from public, anon;
 revoke all on function public.admin_criar_acesso(text, text, text, text) from public, anon;
 revoke all on function public.admin_trocar_senha(uuid, text) from public, anon;
+revoke all on function public.senha_criada() from public, anon;
 grant execute on function public.admin_acessos() to authenticated;
 grant execute on function public.admin_criar_acesso(text, text, text, text) to authenticated;
 grant execute on function public.admin_trocar_senha(uuid, text) to authenticated;
+grant execute on function public.senha_criada() to authenticated;
