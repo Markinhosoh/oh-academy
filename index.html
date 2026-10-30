@@ -401,6 +401,9 @@ body.auth .top,body.auth .dock,body.auth main{display:none!important}
 .login .err{color:var(--bad);font-weight:600;font-size:14px;text-align:center;min-height:1.2em}
 .login .err:not(:empty){animation:shake .4s}
 .login small{color:var(--muted);text-align:center;font-size:13px}
+.login .ok-msg{color:var(--green-l);font-weight:600;font-size:14px;text-align:center;min-height:1.2em}
+.login .link-btn{border:0;background:none;color:var(--muted);font-size:13px;text-decoration:underline;justify-self:center;padding:2px}
+.login [hidden]{display:none}
 .whoami{display:flex;justify-content:center;gap:6px;align-items:center;flex-wrap:wrap}
 .whoami button{border:0;background:none;color:var(--green);font:inherit;font-weight:600;text-decoration:underline;padding:0;cursor:pointer}
 .pl-ctrl{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:10px}
@@ -503,13 +506,24 @@ th,td{border-bottom-color:#3a3a3a}
       <label>Usuário
         <span class="suffix"><input id="lgUser" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="ex.: ana.centro" required><span>@ohacademy.app</span></span>
       </label>
-      <label>Senha
+      <label>Senha <span style="font-weight:400;color:var(--muted)">(no 1º acesso, o código que você recebeu)</span>
         <input id="lgPass" name="password" type="password" autocomplete="current-password" required>
       </label>
       <div class="err" id="lgErr" role="alert"></div>
       <button class="cta" id="lgBtn" type="submit">Entrar</button>
     </form>
-    <small>Esqueceu a senha? Fale com o admin da sua loja.</small>
+    <small id="lgHelp">Esqueceu a senha? Fale com o admin da sua loja.</small>
+    <form id="senhaForm" novalidate hidden>
+      <label>Nova senha
+        <input id="sgNova" name="new-password" type="password" autocomplete="new-password" minlength="6" required>
+      </label>
+      <label>Repita a nova senha
+        <input id="sgRep" name="new-password-repeat" type="password" autocomplete="new-password" minlength="6" required>
+      </label>
+      <div class="err" id="sgErr" role="alert"></div>
+      <button class="cta" id="sgBtn" type="submit">Salvar senha e entrar</button>
+      <button class="link-btn" id="sgSair" type="button">Sair</button>
+    </form>
   </div>
 </section>
 
@@ -617,9 +631,9 @@ th,td{border-bottom-color:#3a3a3a}
   <section class="acc" aria-labelledby="accTitle">
     <div class="acc-head"><h2 id="accTitle">Acessos da equipe</h2><button class="btn play" id="accNovo" type="button">+ Cadastrar vendedores</button></div>
     <div class="acc-box" id="accForm" hidden>
-      <p>Cole a lista, <b>um vendedor por linha</b>, no formato <b>Nome, Loja</b>. O usuário e a senha são criados sozinhos e dá pra ajustar antes de salvar.</p>
+      <p>Cole a lista, <b>um vendedor por linha</b>, no formato <b>Nome, Loja</b>. O usuário e um código de primeiro acesso são criados sozinhos (dá pra ajustar antes de salvar). No primeiro login, cada vendedor cria a própria senha.</p>
       <textarea id="accLista" placeholder="Ana Souza, Centro&#10;Bruno Lima, Shopping&#10;Carla Dias, Parceira Visão"></textarea>
-      <div class="row-btns"><button class="btn ghost" id="accGerar" type="button">Gerar usuários e senhas</button></div>
+      <div class="row-btns"><button class="btn ghost" id="accGerar" type="button">Gerar usuários e códigos</button></div>
       <div id="accPrev"></div>
     </div>
     <div class="acc-box" id="accLista2"><p>Carregando os acessos…</p></div>
@@ -930,7 +944,7 @@ function sugerirUsuario(nome,loja,usados){
  if(usados.has(u)&&n.length>1)u=n[0]+n[n.length-1]+(l?"."+l:"");
  for(let i=2;usados.has(u);i++)u=u.replace(/\d*$/,"")+i;
  usados.add(u);return u}
-function msgAcesso(a){return`Olá, ${a.nome.split(" ")[0]}! Seu acesso à Escola de Vendas OH! (OH! academy):\n${SITE}\nUsuário: ${a.usuario}\nSenha: ${a.senha}`}
+function msgAcesso(a){return`Olá, ${a.nome.split(" ")[0]}! Seu acesso à Escola de Vendas OH! (OH! academy):\n${SITE}\nUsuário: ${a.usuario}\nCódigo de primeiro acesso: ${a.senha}\nNo primeiro login, digite o código no campo Senha e depois crie a sua senha.`}
 async function copiar(t){try{await navigator.clipboard.writeText(t);toast("Copiado! Agora é só colar no WhatsApp.");return true}catch(e){prompt("Copie o texto abaixo:",t);return false}}
 
 async function renderAcessos(){
@@ -939,7 +953,7 @@ async function renderAcessos(){
  if(error){box.innerHTML='<p>Falta um passo no Supabase para cadastrar pelo portal: abra o SQL Editor, cole o arquivo <b>supabase/cadastro.sql</b> e clique em Run. Depois toque em Atualizar.</p>';return}
  ACESSOS=data;
  if(!data.length){box.innerHTML="<p>Ninguém cadastrado ainda.</p>";return}
- box.innerHTML=`<div class="tbl"><table><thead><tr><th>Nome</th><th>Usuário</th><th>Último acesso</th><th></th></tr></thead><tbody>${data.map(a=>`<tr class="${a.ativo?"":"off"}" data-id="${a.id}"><td><b>${esc(a.nome)}</b><br><small style="color:var(--muted)">${esc(a.loja||"—")}${a.papel==="admin"?" · admin":""}${a.ativo?"":" · desativado"}</small></td><td>${esc(a.usuario)}</td><td>${a.ultimo_login?quando(a.ultimo_login):"nunca entrou"}</td><td><div class="row-btns"><button class="mini-btn" data-a="editar" type="button">Editar</button>${a.papel==="admin"?"":`<button class="mini-btn" data-a="senha" type="button">Nova senha</button><button class="mini-btn" data-a="ativo" type="button">${a.ativo?"Desativar":"Reativar"}</button>`}</div></td></tr>`).join("")}</tbody></table></div>`;
+ box.innerHTML=`<div class="tbl"><table><thead><tr><th>Nome</th><th>Usuário</th><th>Último acesso</th><th></th></tr></thead><tbody>${data.map(a=>`<tr class="${a.ativo?"":"off"}" data-id="${a.id}"><td><b>${esc(a.nome)}</b><br><small style="color:var(--muted)">${esc(a.loja||"—")}${a.papel==="admin"?" · admin":""}${a.ativo?"":" · desativado"}${a.trocar_senha?' · <span style="color:var(--orange)">falta criar a senha</span>':""}</small></td><td>${esc(a.usuario)}</td><td>${a.ultimo_login?quando(a.ultimo_login):"nunca entrou"}</td><td><div class="row-btns"><button class="mini-btn" data-a="editar" type="button">Editar</button>${a.papel==="admin"?"":`<button class="mini-btn" data-a="senha" type="button">Novo código</button><button class="mini-btn" data-a="ativo" type="button">${a.ativo?"Desativar":"Reativar"}</button>`}</div></td></tr>`).join("")}</tbody></table></div>`;
  box.querySelectorAll("button[data-a]").forEach(b=>b.onclick=async()=>{const a=ACESSOS.find(x=>x.id===b.closest("tr").dataset.id);b.disabled=true;
   if(b.dataset.a==="editar"){
    const nome=prompt("Nome completo:",a.nome===a.usuario?"":a.nome);if(nome===null){b.disabled=false;return}
@@ -949,10 +963,10 @@ async function renderAcessos(){
    if(r.error){toast("Não deu certo: "+r.error.message);b.disabled=false;return}
    toast("Dados atualizados.")}
   else if(b.dataset.a==="senha"){const senha=novaSenha();
-   if(!confirm(`Criar uma senha nova para ${a.nome}? A senha antiga deixa de funcionar.`)){b.disabled=false;return}
+   if(!confirm(`Gerar um código novo para ${a.nome}? A senha atual deixa de funcionar e a pessoa cria outra no próximo login.`)){b.disabled=false;return}
    const r=await sb.rpc("admin_trocar_senha",{p_id:a.id,p_senha:senha});
    if(r.error){toast("Não deu certo: "+r.error.message);b.disabled=false;return}
-   if(await copiar(msgAcesso({...a,senha})))alert(`Nova senha de ${a.nome}: ${senha}\n\nA mensagem com usuário e senha já foi copiada.`)}
+   if(await copiar(msgAcesso({...a,senha})))alert(`Código novo de ${a.nome}: ${senha}\n\nA mensagem com usuário e código já foi copiada.`)}
   else{if(a.ativo&&!confirm(`Desativar o acesso de ${a.nome}? A pessoa não consegue mais entrar, mas o histórico fica guardado.`)){b.disabled=false;return}
    const r=await sb.from("perfis").update({ativo:!a.ativo}).eq("id",a.id);
    if(r.error){toast("Não deu certo: "+r.error.message);b.disabled=false;return}
@@ -965,9 +979,9 @@ $("#accGerar").onclick=()=>{
  const linhas=$("#accLista").value.split(/\n/).map(l=>l.trim()).filter(Boolean).map(l=>{const [nome,...r]=l.split(/[,;\t]/);return{nome:nome.trim(),loja:r.join(" ").trim()}}).filter(x=>x.nome);
  if(!linhas.length){toast("Cole pelo menos um nome.");return}
  const prev=$("#accPrev");
- prev.innerHTML=`<div class="tbl"><table><thead><tr><th>Nome</th><th>Loja</th><th>Usuário</th><th>Senha</th><th>Situação</th></tr></thead><tbody>${linhas.map(x=>`<tr><td><input data-c="nome" value="${esc(x.nome)}"></td><td><input data-c="loja" value="${esc(x.loja)}"></td><td><input data-c="usuario" value="${sugerirUsuario(x.nome,x.loja,usados)}" autocapitalize="none" spellcheck="false"></td><td><input data-c="senha" value="${novaSenha()}" spellcheck="false"></td><td class="st">—</td></tr>`).join("")}</tbody></table></div>
+ prev.innerHTML=`<div class="tbl"><table><thead><tr><th>Nome</th><th>Loja</th><th>Usuário</th><th>Código</th><th>Situação</th></tr></thead><tbody>${linhas.map(x=>`<tr><td><input data-c="nome" value="${esc(x.nome)}"></td><td><input data-c="loja" value="${esc(x.loja)}"></td><td><input data-c="usuario" value="${sugerirUsuario(x.nome,x.loja,usados)}" autocapitalize="none" spellcheck="false"></td><td><input data-c="senha" value="${novaSenha()}" spellcheck="false"></td><td class="st">—</td></tr>`).join("")}</tbody></table></div>
  <div class="row-btns"><button class="btn play" id="accCriar" type="button">Criar ${linhas.length} acesso${linhas.length>1?"s":""}</button><button class="btn ghost" id="accCopiar" type="button" hidden>Copiar mensagens</button></div>
- <p>Anote ou copie as senhas antes de sair desta tela: depois elas não aparecem mais (dá pra gerar uma nova a qualquer hora).</p>`;
+ <p>Copie as mensagens antes de sair desta tela: os códigos não aparecem de novo (dá pra gerar outro a qualquer hora em “Novo código”).</p>`;
  const criados=[];
  $("#accCriar").onclick=async()=>{const bt=$("#accCriar");bt.disabled=true;bt.textContent="Criando…";
   for(const tr of prev.querySelectorAll("tbody tr")){const st=tr.querySelector(".st");if(st.dataset.ok)continue;
@@ -1044,10 +1058,12 @@ $("#loginForm").addEventListener("submit",async ev=>{ev.preventDefault();
 
 async function entrar(user){
  const [perf,prog]=await Promise.all([
-  sb.from("perfis").select("id,nome,loja,papel,ativo").eq("id",user.id).maybeSingle(),
+  sb.from("perfis").select("id,nome,loja,papel,ativo,trocar_senha").eq("id",user.id).maybeSingle()
+   .then(r=>r.error?sb.from("perfis").select("id,nome,loja,papel,ativo").eq("id",user.id).maybeSingle():r),
   sb.from("progresso").select("modulo,passo,xp").eq("usuario_id",user.id)]);
  if(perf.error||!perf.data||perf.data.ativo===false||prog.error){
   await sb.auth.signOut();showLogin("Seu acesso ainda não está liberado. Fale com o admin da sua loja.");return}
+ if(perf.data.trocar_senha){pedirSenha(user,perf.data);return}
  ME=perf.data;KEY="ohacademy-"+ME.id;
  S={xp:0,done:[],mats:{},seen:loadSeen()};
  prog.data.forEach(r=>{S.xp+=r.xp;const k=/^mat(\d+)$/.exec(r.passo);if(k)S.mats[r.modulo+"-"+k[1]]=true;
@@ -1060,6 +1076,27 @@ async function entrar(user){
  renderXP();renderDots();
  let v0="seller";try{v0=VIEWS.includes(location.hash.slice(1))?location.hash.slice(1):(localStorage.getItem(KEY+"-view")||"seller")}catch(e){}view(v0);
  registrar("entrou");reenviar()}
+
+// Primeiro acesso (ou depois de um código novo): o vendedor cria a própria senha, digitando duas vezes.
+function modoSenha(on,nome){$("#loginForm").hidden=on;$("#lgHelp").hidden=on;$("#senhaForm").hidden=!on;
+ const pr=(nome||"").split(/[\s.]/)[0]||"";
+ $("#loginTitle").textContent=on?`Oi${pr?", "+pr[0].toUpperCase()+pr.slice(1):""}! Crie sua senha`:"Bem-vindo à Escola de Vendas OH!";
+ $("#loginTitle").nextElementSibling.textContent=on?"Ela substitui o código que você recebeu. Use pelo menos 6 caracteres e digite igual nos dois campos.":"Entre com o usuário e a senha que o seu gestor te passou."}
+let SG_USER=null;
+function pedirSenha(user,perfil){SG_USER=user;document.body.classList.add("auth");$("#login").hidden=false;modoSenha(true,perfil.nome);
+ $("#sgNova").value=$("#sgRep").value="";$("#sgErr").textContent="";$("#sgBtn").disabled=false;$("#sgBtn").textContent="Salvar senha e entrar";setTimeout(()=>$("#sgNova").focus(),50)}
+$("#sgRep").addEventListener("input",()=>{const a=$("#sgNova").value,b=$("#sgRep").value;$("#sgErr").textContent=b&&!a.startsWith(b)?"As senhas ainda não estão iguais.":""});
+$("#senhaForm").addEventListener("submit",async ev=>{ev.preventDefault();
+ const a=$("#sgNova").value,b=$("#sgRep").value;
+ if(a.length<6){$("#sgErr").textContent="A senha precisa ter pelo menos 6 caracteres.";return}
+ if(a!==b){$("#sgErr").textContent="As duas senhas estão diferentes. Digite de novo.";$("#sgRep").value="";$("#sgRep").focus();return}
+ $("#sgErr").textContent="";$("#sgBtn").disabled=true;$("#sgBtn").textContent="Salvando…";
+ const {error}=await sb.auth.updateUser({password:a});
+ if(error){$("#sgBtn").disabled=false;$("#sgBtn").textContent="Salvar senha e entrar";
+  $("#sgErr").textContent=/different|same/i.test(error.message)?"Escolha uma senha diferente do código que você recebeu.":/weak|short|least/i.test(error.message)?"Senha fraca: use pelo menos 6 caracteres.":"Não foi possível salvar agora. Tente de novo.";return}
+ await sb.rpc("senha_criada");
+ modoSenha(false);toast("Senha criada! Use ela nas próximas vezes.");await entrar(SG_USER)});
+$("#sgSair").onclick=async()=>{await sb.auth.signOut();modoSenha(false);showLogin()};
 
 $("#logout").onclick=async()=>{fecharMat();fecharMaterial();await sb.auth.signOut();ME=null;
  document.querySelector('.dock button[data-v="admin"]').hidden=true;showLogin()};
